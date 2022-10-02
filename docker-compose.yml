@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  yodb:
+    container_name: yodb
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=yodb
+    expose:
+      - 3306
+    networks:
+      - backdb
+    restart: always
+
+  yourone-backend:
+    container_name: yourone-backend
+    image: yourone-backend:latest
+    restart: on-failure
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 8040:8040
+    depends_on:
+      - yodb
+    networks:
+      - backdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://yodb:3306/yodb
+
+
+
+
+
+volumes:
+  mariadb:
+
+
+networks:
+  backdb:
+    driver: bridge
