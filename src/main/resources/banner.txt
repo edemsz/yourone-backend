@@ -1,9 +1,12 @@
+o       O                      .oOOOo.
+O       o                     .O     o.
+`o     O'                     O       o
+  O   o                       o       O
+   `O'    .oOo. O   o  `OoOo. O       o 'OoOo. .oOo.
+    o     O   o o   O   o     o       O  o   O OooO'
+    O     o   O O   o   O     `o     O'  O   o O
+    O     `OoO' `OoO'o  o      `OoooO'   o   O `OoO'
 
-,------.                     ,--. ,--.
-|  .---'  ,--,--. ,--,--,--. `--' |  | ,--. ,--.
-|  `--,  ' ,-.  | |        | ,--. |  |  \  '  /
-|  |`    \ '-'  | |  |  |  | |  | |  |   \   '
-`--'      `--`--' `--`--`--' `--' `--' .-'  /
-                                       `---'
+
 ${application.title} ${application.version}
 Powered by Spring Boot ${spring-boot.version}

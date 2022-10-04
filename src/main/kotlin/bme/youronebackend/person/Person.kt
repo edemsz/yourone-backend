@@ -1,6 +1,5 @@
 package bme.youronebackend.person
 
-import bme.youronebackend.auth.Role
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.LocalDate
 import javax.persistence.*
@@ -64,11 +63,8 @@ class Person()  {
     @Column(nullable = false, name = "user_id")
     lateinit var uid: String
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-        joinColumns = [JoinColumn(name = "user_id")],
-        inverseJoinColumns = [JoinColumn(name = "role_id")])
-    var roles:MutableList<Role> = arrayListOf()
+    @Column(nullable = true)
+    var bio:String?=null
 
 
 

@@ -47,15 +47,6 @@ constructor() {
     }
 
 
-
-
-    fun setPassword(uid:String,passwordEncoded:String){
-        val person=repository.findByUid(uid)
-        person?.password=passwordEncoded
-        repository.save(person!!)
-
-    }
-
     fun register(registerData: RegistrationDTO) {
         if(repository.existsByUsername(registerData.username)){
             throw ResourceAlreadyExistsException()
@@ -65,7 +56,7 @@ constructor() {
             ,registerData.email,registerData.photo,registerData.birthDate)
 
         val person=this.add(personFromDTO)
-        person!!.password=passwordEncoder.encode(registerData.password)
+        person.password=passwordEncoder.encode(registerData.password)
         person.username=registerData.username
         this.updateById(person.id,person)
     }
