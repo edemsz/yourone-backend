@@ -6,7 +6,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "PERSON")
-class Person()  {
+class Person() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -14,34 +14,19 @@ class Person()  {
 
 
     constructor(
-        firstName: String, lastName: String,
+        name: String,
         email: String, photo: String?, birthDate: LocalDate?,
     ) : this() {
-        this.firstName = firstName
-        this.lastName = lastName
+        this.name=name
         this.email = email
         this.photo = photo
         this.birthDate = birthDate
-        this.setUid()
-    }
-
-    fun setUid(): Person {
-        val stringLength = 10
-        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        val randomString = (1..stringLength)
-            .map { kotlin.random.Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("")
-        this.uid = randomString
-        return this
     }
 
 
     @Column(nullable = false)
-    lateinit var firstName: String
+    lateinit var name: String
 
-    @Column(nullable = false)
-    lateinit var lastName: String
 
     @Column(nullable = false)
     lateinit var email: String
@@ -60,13 +45,83 @@ class Person()  {
     @Column(nullable = true)
     var password: String? = null
 
-    @Column(nullable = false, name = "user_id")
-    lateinit var uid: String
 
     @Column(nullable = true)
-    var bio:String?=null
+    var bio: String? = null
+
+    @Column(nullable = true)
+    var city: String? = null
+
+    @Column(nullable = true)
+    var cityType: String? = null
+
+    @Column(nullable = true)
+    var jobType: String? = null
+
+    @Column(nullable = true)
+    var eduLevel: String? = null
+
+    @Column(nullable = true)
+    var cigarettes: String? = null
+
+    @Column(nullable = true)
+    var alcohol: String? = null
+
+    @Column(nullable = true)
+    var childrenNumber: String? = null
+
+    @Column(nullable = true)
+    var maritalStatus: String? = null
+
+    @Column(nullable = true)
+    var musicalTaste: String? = null
+
+    @Column(nullable = true)
+    var filmTaste: String? = null
+
+    @Column(nullable = true)
+    var religion: String? = null
+
+    @Column(nullable = true)
+    var horoscope: String? = null
+
+    @Column(nullable = true)
+    var languages: String? = null
+
+    @Column(nullable = true)
+    var interests: String? = null
 
 
+    @Column(nullable = true)
+    var height: Int? = null
+
+
+    @Column(nullable = true)
+    var gender: String? = null
+
+    @Column(nullable = true)
+    var tattoo: String? = null
+
+    @Column(nullable = true)
+    var eyeColour: String? = null
+
+    @Column(nullable = true)
+    var hairColour: String? = null
+
+    @Column(nullable = true)
+    var piercing: String? = null
+
+    @Column(nullable = true)
+    var glasses: String? = null
+
+    @Column(nullable = true)
+    var beard: String? = null
+
+    @Column(nullable = true)
+    var sportiness: String? = null
+
+    @Column(nullable = true)
+    var breastSize: String? = null
 
 
 }

@@ -1,11 +1,9 @@
-package bme.youronebackend.auth
+package bme.youronebackend.person
 
 import java.time.LocalDate
 
-
-data class RegistrationDTO(
-    var username: String,
-    var password: String,
+data class PersonAllDTO(
+    var username: String?,
     var name: String,
     var email: String,
     var photo: String,
@@ -36,10 +34,4 @@ data class RegistrationDTO(
     var horoscope: String? = null,
     var languages: String? = null,
     var interests: String? = null,
-
-)
-
-data class LoginDTO(
-    var username: String,
-    var password: String,
 )

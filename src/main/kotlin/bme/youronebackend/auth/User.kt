@@ -7,11 +7,9 @@ import java.time.LocalDate
 
 class User (
     private var username: String? = null,
-    var firstName: String? = null,
-    var lastName: String? = null,
+    var name: String? = null,
     private var password: String? = null,
     var email: String? = null,
-    var uid:String?=null,
     var lastPasswordResetDate: LocalDate? = null) : UserDetails {
 
     @Transient
@@ -44,9 +42,7 @@ class User (
         this.password=person.password
         this.username=person.username
         this.email=person.email
-        this.firstName=person.firstName
-        this.lastName=person.lastName
-        this.uid=person.uid
+        this.name=person.name
         return this
     }
 }
