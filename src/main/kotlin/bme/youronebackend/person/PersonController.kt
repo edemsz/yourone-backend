@@ -74,4 +74,20 @@ open class PersonController {
     }
 
 
+    @GetMapping("/potential-partner")
+
+    @PostMapping("/partner-match")
+    //igen/nem
+
+    @PutMapping("/update-profile")
+
+    @GetMapping("/all-partners")
+
+    @GetMapping("/all-chats")
+    //realtime websocket
+
+    @GetMapping("/chat/{id}")
+
+    @PostMapping("/send-message")
+
 }

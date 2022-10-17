@@ -50,46 +50,43 @@ class Person() {
     var bio: String? = null
 
     @Column(nullable = true)
-    var city: String? = null
+    var city: Int? = null
 
     @Column(nullable = true)
-    var cityType: String? = null
+    var jobType: Int? = null
 
     @Column(nullable = true)
-    var jobType: String? = null
+    var eduLevel: Int? = null
 
     @Column(nullable = true)
-    var eduLevel: String? = null
+    var cigarettes: Int? = null
 
     @Column(nullable = true)
-    var cigarettes: String? = null
+    var alcohol: Int? = null
 
     @Column(nullable = true)
-    var alcohol: String? = null
+    var childrenNumber: Int? = null
 
     @Column(nullable = true)
-    var childrenNumber: String? = null
+    var maritalStatus: Int? = null
 
     @Column(nullable = true)
-    var maritalStatus: String? = null
+    var musicalTaste: Int? = null
 
     @Column(nullable = true)
-    var musicalTaste: String? = null
+    var filmTaste: Int? = null
 
     @Column(nullable = true)
-    var filmTaste: String? = null
+    var religion: Int? = null
 
     @Column(nullable = true)
-    var religion: String? = null
+    var horoscope: Int? = null
 
     @Column(nullable = true)
-    var horoscope: String? = null
+    var languages: Int? = null
 
     @Column(nullable = true)
-    var languages: String? = null
-
-    @Column(nullable = true)
-    var interests: String? = null
+    var interests: Int? = null
 
 
     @Column(nullable = true)
@@ -97,31 +94,34 @@ class Person() {
 
 
     @Column(nullable = true)
-    var gender: String? = null
+    var gender: Int? = null
 
     @Column(nullable = true)
-    var tattoo: String? = null
+    var tattoo: Int? = null
 
     @Column(nullable = true)
-    var eyeColour: String? = null
+    var eyeColour: Int? = null
 
     @Column(nullable = true)
-    var hairColour: String? = null
+    var hairColour: Int? = null
 
     @Column(nullable = true)
-    var piercing: String? = null
+    var piercing: Int? = null
 
     @Column(nullable = true)
-    var glasses: String? = null
+    var glasses: Int? = null
 
     @Column(nullable = true)
-    var beard: String? = null
+    var beard: Int? = null
 
     @Column(nullable = true)
-    var sportiness: String? = null
+    var sportiness: Int? = null
 
     @Column(nullable = true)
-    var breastSize: String? = null
+    var shape: Int? = null
+
+    @Column(nullable = true)
+    var breastSize: Int? = null
 
 
 }

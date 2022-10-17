@@ -36,7 +36,6 @@ open class DataLoader @Autowired constructor
         if (randomValues[0] == 1)
             p.gender = "Female"
         p.city = if (randomValues[1] == 0) "Budapest" else "Szeged"
-        p.cityType = if (randomValues[1] == 0) "city" else "village"
         p.jobType = if (randomValues[2] == 0) "IT" else "health"
         p.eduLevel = if (randomValues[3] == 0) "University" else "high school"
         p.cigarettes = if (randomValues[4] == 0) "Every day" else "Never"
