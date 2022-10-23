@@ -7,8 +7,11 @@ import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
 import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.time.LocalDate
 import java.util.concurrent.ThreadLocalRandom
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 @Component
@@ -28,41 +31,43 @@ open class DataLoader @Autowired constructor
         }
     }
 
+    private fun randomNumber(maxInclusive: Int): Int {
+        return Random.nextInt(0, maxInclusive )
+    }
+
     private fun createPerson(): Person {
         val p = Person("a", "random@gmail.com", "", randomDate())
-        val randomValues = List(30) { Random.nextInt(0, 2) }
-        if (randomValues[0] == 0)
-            p.gender = "Male"
-        if (randomValues[0] == 1)
-            p.gender = "Female"
-        p.city = if (randomValues[1] == 0) "Budapest" else "Szeged"
-        p.jobType = if (randomValues[2] == 0) "IT" else "health"
-        p.eduLevel = if (randomValues[3] == 0) "University" else "high school"
-        p.cigarettes = if (randomValues[4] == 0) "Every day" else "Never"
-        p.childrenNumber = if (randomValues[6] == 0) "3+" else "None"
-        p.maritalStatus = if (randomValues[7] == 0) "Married" else "Widow"
-        p.musicalTaste = if (randomValues[8] == 0) "Hard rock" else "Hip-hop"
-        p.filmTaste = if (randomValues[9] == 0) "Romance" else "Sci-fi"
-        p.religion = if (randomValues[10] == 0) "Reformed" else "Atheist"
-        p.horoscope = if (randomValues[11] == 0) "Pisces" else "Capricorn"
-        p.languages = if (randomValues[12] == 0) "Only English" else "English, Hungarian, Basque"
-        p.interests = if (randomValues[13] == 0) "Football" else "Cooking"
-        p.height = if (randomValues[15] == 0) 170 else 180
-        p.tattoo = if (randomValues[16] == 0) "Only one" else "Never"
-        p.hairColour = if (randomValues[17] == 0) "Brown" else "Fair"
-        p.eyeColour = if (randomValues[18] == 0) "Green" else "Blue"
-        p.piercing = if (randomValues[19] == 0) "Only one" else "Never"
-        p.glasses = if (randomValues[20] == 0) "Myopic" else "No"
-        p.sportiness = if (randomValues[22] == 0) "Every day" else "No sport"
-        if (p.gender == "Male")
-            p.beard = if (randomValues[22] == 0) "Has long beard" else "None"
-        if (p.gender == "Female")
-            p.breastSize = if (randomValues[23] == 0) "EE" else "C"
-        if (p.gender == "Male")
+        p.gender = randomNumber(3)
+        p.city =randomCity()
+        p.jobType = randomNumber(28)
+        p.eduLevel = randomNumber(8)
+        p.cigarettes = randomNumber(5)
+        p.childrenNumber = randomNumber(4)
+        p.maritalStatus = randomNumber(5)
+        p.alcohol = randomNumber(4)
+        p.musicalTaste = randomNumber(15)
+        p.filmTaste = randomNumber(14)
+        p.religion = randomNumber(25)
+        p.horoscope = randomNumber(12)
+        p.languages = randomNumber(13)
+        p.interests = randomNumber(12)
+        p.height = (java.util.Random().nextGaussian() * 60 + 150).roundToInt()
+        p.tattoo = randomNumber(4)
+        p.hairColour = randomNumber(7)
+        p.eyeColour = randomNumber(5)
+        p.piercing = randomNumber(4)
+        p.glasses = randomNumber(4)
+        p.sportiness = randomNumber(5)
+        p.shape = randomNumber(6)
+        if (p.gender!! >0 )
+            p.facialHair = randomNumber(3)
+        if (p.gender == 1)
+            p.breastSize = randomNumber(7)
+        if (p.gender!! >0)
             p.name = randomMaleName()
-        if (p.gender == "Female")
+        if (p.gender == 0)
             p.name = randomFemaleName()
-
+        println(p.city)
         return p
     }
 
@@ -74,16 +79,21 @@ open class DataLoader @Autowired constructor
     }
 
     private fun randomMaleName(): String {
-        return "Béla"
-        val text = File("static/osszesffi.txt").readText()
+        val inputStream : InputStream = FileInputStream("static/osszesffi.txt")
+        val text = inputStream.bufferedReader(Charsets.ISO_8859_1).use { it.readText()}
         val list = text.split("\n")
         return list.random()
     }
 
-    private fun randomFemaleName(): String {
-        return "Gizi"
+    private fun randomCity(): String {
+        val list= listOf<String>("Miskolc","Esztergom","Eger","Budapest","Szeged","Debrecen","Szolnok","Sopron")
+        return list.random()
+    }
 
-        val text = File("static/osszesnoi.txt").readText()
+    private fun randomFemaleName(): String {
+
+        val inputStream : InputStream = FileInputStream("static/osszesnoi.txt")
+        val text = inputStream.bufferedReader(Charsets.ISO_8859_1).use { it.readText()}
         val list = text.split("\n")
         return list.random()
     }

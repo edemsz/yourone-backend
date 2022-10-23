@@ -50,7 +50,7 @@ class Person() {
     var bio: String? = null
 
     @Column(nullable = true)
-    var city: Int? = null
+    var city: String? = null
 
     @Column(nullable = true)
     var jobType: Int? = null
@@ -111,8 +111,6 @@ class Person() {
     @Column(nullable = true)
     var glasses: Int? = null
 
-    @Column(nullable = true)
-    var beard: Int? = null
 
     @Column(nullable = true)
     var sportiness: Int? = null
@@ -122,6 +120,8 @@ class Person() {
 
     @Column(nullable = true)
     var breastSize: Int? = null
+    @Column(nullable = true)
+    var facialHair: Int? = null
 
 
 }

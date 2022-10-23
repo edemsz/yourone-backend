@@ -21,13 +21,12 @@ open class PersonController {
     lateinit var jwtTools: JWTTools
 
     @Autowired
-    lateinit var personMapper: PersonMapper
+    lateinit var personMapper: PersonMapperFacade
 
 
     @GetMapping("/me")
     @ApiOperation("Gets the person entity of the current user")
-    fun getMe(@RequestHeader("Authorization") authHeader: String?)
-            : ResponseEntity<PersonAllDTO> {
+    fun getMe(@RequestHeader("Authorization") authHeader: String?): ResponseEntity<PersonAllDTO> {
 
         val person = personService.getCurrentMember(authHeader, null)
         val dto = personMapper.entityToDto(person)
@@ -55,39 +54,69 @@ open class PersonController {
 
     @PutMapping("/{id}")
     @ApiOperation("Modifying user data")
-    fun changeUserData(@RequestBody newData: PersonAllDTO, @PathVariable(value = "id") id: Long)
-            : ResponseEntity<PersonAllDTO> {
+    fun changeUserData(
+        @RequestBody newData: PersonAllDTO,
+        @PathVariable(value = "id") id: Long,
+    ): ResponseEntity<PersonAllDTO> {
         val newPerson = personMapper.allDtoToEntity(newData)
         val changedPerson = personService.updateById(id, newPerson)
         val dto = personMapper.entityToDto(changedPerson)
         return ResponseEntity.ok(dto)
     }
 
-    @GetMapping("/next")
-    @ApiOperation("Get next partner who can be swiped left or right")
-    fun getNextPartner(@RequestHeader("Authorization") authHeader: String?)
-            : ResponseEntity<PersonAllDTO> {
-        val swipingPerson=personService.getCurrentMember(authHeader, null)
-        val shownPerson = personService.getShownPerson(swipingPerson)
-        val dto = personMapper.entityToDto(shownPerson)
+
+    @GetMapping("/potential-partners")
+    fun getPotentialPartner(@RequestHeader("Authorization") authHeader: String?): ResponseEntity<List<PersonAllDTO>> {
+        val swipingPerson = personService.getCurrentMember(authHeader, null)
+        val shownPeople = personService.getNextPersons(swipingPerson)
+        val dto = shownPeople.map { personMapper.pairToDto(it, swipingPerson) }
         return ResponseEntity.ok(dto)
     }
 
+    @GetMapping("/")
+    fun getAll(): ResponseEntity<List<PersonAllDTO>> {
+        return ResponseEntity.ok(personService.getAll().map { personMapper.entityToDto(it) })
+    }
 
-    @GetMapping("/potential-partner")
+    @PostMapping("/partner-match/no")
+    fun noMatch(
+        @RequestBody partnerId: Long,
+        @RequestHeader("Authorization") authHeader: String?,
+    ): ResponseEntity.HeadersBuilder<*> {
+        val swipingPerson = personService.getCurrentMember(authHeader, null)
+        personService.noMatch(swipingPerson, partnerId)
+        return ResponseEntity.noContent()
+    }
 
-    @PostMapping("/partner-match")
-    //igen/nem
+    @PostMapping("/partner-match/yes")
+    fun yesMatch(
+        @RequestBody partnerId: Long,
+        @RequestHeader("Authorization") authHeader: String?,
+    ): ResponseEntity.HeadersBuilder<*> {
+        val swipingPerson = personService.getCurrentMember(authHeader, null)
+        personService.yesMatch(swipingPerson, partnerId)
+        return ResponseEntity.noContent()
 
-    @PutMapping("/update-profile")
+    }
 
     @GetMapping("/all-partners")
+    fun getAllPartners(@RequestHeader("Authorization") authHeader: String?): ResponseEntity<List<PersonAllDTO>> {
+        val swipingPerson = personService.getCurrentMember(authHeader, null)
+        val matches=personService.getMatches(swipingPerson)
+        return ResponseEntity.ok(matches.map { personMapper.pairToDto(it,swipingPerson) })
+    }
+
+
+
+
+
+/*
 
     @GetMapping("/all-chats")
     //realtime websocket
 
     @GetMapping("/chat/{id}")
 
-    @PostMapping("/send-message")
+    @PostMapping("/send-message")*/
 
 }

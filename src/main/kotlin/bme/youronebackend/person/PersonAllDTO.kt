@@ -3,6 +3,8 @@ package bme.youronebackend.person
 import java.time.LocalDate
 
 data class PersonAllDTO(
+
+    var id: Long,
     var username: String?,
     var name: String,
     var email: String,
@@ -16,11 +18,10 @@ data class PersonAllDTO(
     var hairColour: Int? = null,
     var piercing: Int? = null,
     var glasses: Int? = null,
-    var beard: Int? = null,
     var sportiness: Int? = null,
     var breastSize: Int? = null,
-    var bio: Int? = null,
-    var city: Int? = null,
+    var bio: String? = null,
+    var city: String? = null,
     var jobType: Int? = null,
     var eduLevel: Int? = null,
     var cigarettes: Int? = null,
@@ -33,4 +34,7 @@ data class PersonAllDTO(
     var horoscope: Int? = null,
     var languages: Int? = null,
     var interests: Int? = null,
+    var shape: Int? = null,
+    var facialHair: Int? = null,
+    var matchPct: Int? = null,
 )
