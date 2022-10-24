@@ -31,7 +31,7 @@ services:
     networks:
       - backdb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://yodb:3306/yodb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://yodb:5432/yodb
 
 
 
