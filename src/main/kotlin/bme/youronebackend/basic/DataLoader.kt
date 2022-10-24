@@ -86,7 +86,9 @@ open class DataLoader @Autowired constructor
     }
 
     private fun randomCity(): String {
-        val list= listOf<String>("Miskolc","Esztergom","Eger","Budapest","Szeged","Debrecen","Szolnok","Sopron")
+        val inputStream : InputStream = FileInputStream("static/varosok.txt")
+        val text = inputStream.bufferedReader(Charsets.UTF_8).use { it.readText()}
+        val list = text.split("\n")
         return list.random()
     }
 
