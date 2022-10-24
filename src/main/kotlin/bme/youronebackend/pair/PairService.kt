@@ -18,7 +18,7 @@ class PairService {
         if (a == b) return null
         val pair1 = repository.findByAAndB(a, b)
         val pair2 = repository.findByAAndB(b, a)
-        if (pair1 == null || pair2 == null) return null
+        if (pair1 != null || pair2 != null) return null
         return repository.save((PairEntity(a, b)))
     }
 
@@ -33,33 +33,38 @@ class PairService {
         throw ResourceNotFoundException()
     }
 
-    fun replyToPartner(replyingPerson: Person, otherPerson: Person, reply:Boolean):Boolean {
+    fun replyToPartner(replyingPerson: Person, otherPerson: Person, reply: Boolean): Boolean {
         val pair = getPair(replyingPerson, otherPerson)
         if (pair.a == replyingPerson) {
-            if(pair.responseA!=null)
-                throw ResourceAlreadyExistsException()
+            if (pair.responseA != null) throw ResourceAlreadyExistsException()
             pair.responseA = reply
         }
         if (pair.b == replyingPerson) {
-            if(pair.responseB!=null)
-                throw ResourceAlreadyExistsException()
+            if (pair.responseB != null) throw ResourceAlreadyExistsException()
             pair.responseB = reply
         }
         repository.save(pair)
-        return pair.responseA==true && pair.responseB==true
+        return pair.responseA == true && pair.responseB == true
 
     }
 
-    fun getMatchedPersonsByPerson(partner1:Person):List<Person>{
-        val matchedPersons= mutableListOf<Person>()
-        val matchesByA=repository.findAllByAAndState(partner1,PairState.MATCH)
+    fun getMatchedPersonsByPerson(partner1: Person): List<Person> {
+        val matchedPersons = mutableListOf<Person>()
+        val matchesByA = repository.findAllByAAndState(partner1, PairState.MATCH)
         matchedPersons.addAll(matchesByA.map { it.b })
-        val matchesByB=repository.findAllByBAndState(partner1,PairState.MATCH)
+        val matchesByB = repository.findAllByBAndState(partner1, PairState.MATCH)
         matchedPersons.addAll(matchesByB.map { it.a })
         return matchedPersons
     }
 
-
+    fun getMatchesByPerson(partner1: Person): List<PairEntity> {
+        val matches = mutableListOf<PairEntity>()
+        val matchesByA = repository.findAllByAAndState(partner1, PairState.MATCH)
+        matches.addAll(matchesByA)
+        val matchesByB = repository.findAllByBAndState(partner1, PairState.MATCH)
+        matches.addAll(matchesByB)
+        return matches
+    }
 
 
 }

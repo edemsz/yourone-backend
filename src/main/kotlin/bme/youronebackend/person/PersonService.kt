@@ -98,7 +98,7 @@ class PersonService
 
     private fun isPotentialPair(p1: Person, p2: Person): Boolean {
         val pair = pairService.checkPair(p1, p2)
-        return pair == null
+        return pair != null
     }
 
     fun calculatePct(a: Person, b: Person): Int? {

@@ -108,15 +108,4 @@ open class PersonController {
 
 
 
-
-
-/*
-
-    @GetMapping("/all-chats")
-    //realtime websocket
-
-    @GetMapping("/chat/{id}")
-
-    @PostMapping("/send-message")*/
-
 }

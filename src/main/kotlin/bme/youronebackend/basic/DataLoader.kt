@@ -26,6 +26,7 @@ open class DataLoader @Autowired constructor
     }
 
     fun manyPeople() {
+        return
         for (i in 0..500) {
             personService.add(createPerson())
         }

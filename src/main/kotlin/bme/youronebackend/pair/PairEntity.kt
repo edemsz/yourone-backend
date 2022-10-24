@@ -38,6 +38,12 @@ class PairEntity() {
         if (responseA == true && responseB == true) state = PairState.MATCH
     }
 
+    fun getOtherPerson(person1: Person) :Person{
+        if(a==person1)
+            return b
+        return a
+    }
+
 }
 
 enum class PairState {

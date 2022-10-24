@@ -1,5 +1,6 @@
 package bme.youronebackend.message
 
+import bme.youronebackend.person.Person
 import bme.youronebackend.person.PersonService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
 
 
 @Controller
+@RequestMapping("/api/chat")
 class MessageController {
     @Autowired
     private lateinit var messagingTemplate: SimpMessagingTemplate
@@ -35,7 +38,7 @@ class MessageController {
             ChatNotification(message.id!!, message.sender.id, message.sender.name))
     }
 
-    @GetMapping("/messages/{addresseeId}/count")
+    @GetMapping("/{addresseeId}/count")
     fun countNewMessages(
         @RequestHeader("Authorization") authHeader: String?,
         @PathVariable addresseeId: Long,
@@ -45,7 +48,7 @@ class MessageController {
         return ResponseEntity.ok(messageService.countNewMessages(sender, addresseeId))
     }
 
-    @GetMapping("/messages/{addresseeId}")
+    @GetMapping("/{addresseeId}")
     fun findChatMessages(
         @RequestHeader("Authorization") authHeader: String?,
         @PathVariable addresseeId: Long,
@@ -53,6 +56,14 @@ class MessageController {
         val sender = personService.getCurrentMember(authHeader, null)
 
         return ResponseEntity.ok(messageService.findChatMessages(sender, addresseeId))
+    }
+
+    @GetMapping("/")
+    fun findAllChats(
+        @RequestHeader("Authorization") authHeader: String?,
+        ) : ResponseEntity<List<Person>> {
+        val user = personService.getCurrentMember(authHeader, null)
+        return ResponseEntity.ok(messageService.findAllChatPartners(user))
     }
 
 

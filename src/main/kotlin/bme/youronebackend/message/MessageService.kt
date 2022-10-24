@@ -50,5 +50,10 @@ class MessageService {
         }
     }
 
+    fun findAllChatPartners(user: Person): List<Person> {
+        val matches = pairService.getMatchesByPerson(user)
+        return matches.filter { pair -> messageRepository.existsByPair(pair) }.map { pair -> pair.getOtherPerson(user) }
+    }
+
 
 }
