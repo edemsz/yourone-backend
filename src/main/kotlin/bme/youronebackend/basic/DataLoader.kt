@@ -26,7 +26,6 @@ open class DataLoader @Autowired constructor
     }
 
     fun manyPeople() {
-        return
         for (i in 0..500) {
             personService.add(createPerson())
         }
@@ -62,7 +61,7 @@ open class DataLoader @Autowired constructor
         p.shape = randomNumber(6)
         if (p.gender!! >0 )
             p.facialHair = randomNumber(3)
-        if (p.gender == 1)
+        if (p.gender == 0)
             p.breastSize = randomNumber(7)
         if (p.gender!! >0)
             p.name = randomMaleName()
