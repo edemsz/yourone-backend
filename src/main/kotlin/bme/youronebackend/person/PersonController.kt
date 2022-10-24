@@ -82,20 +82,20 @@ open class PersonController {
     fun noMatch(
         @RequestBody partnerId: Long,
         @RequestHeader("Authorization") authHeader: String?,
-    ): ResponseEntity.HeadersBuilder<*> {
+    ): ResponseEntity<Boolean> {
         val swipingPerson = personService.getCurrentMember(authHeader, null)
-        personService.noMatch(swipingPerson, partnerId)
-        return ResponseEntity.noContent()
+
+        return ResponseEntity.ok(personService.noMatch(swipingPerson, partnerId))
     }
 
     @PostMapping("/partner-match/yes")
     fun yesMatch(
         @RequestBody partnerId: Long,
         @RequestHeader("Authorization") authHeader: String?,
-    ): ResponseEntity.HeadersBuilder<*> {
+    ): ResponseEntity<Boolean> {
         val swipingPerson = personService.getCurrentMember(authHeader, null)
-        personService.yesMatch(swipingPerson, partnerId)
-        return ResponseEntity.noContent()
+
+        return ResponseEntity.ok(personService.yesMatch(swipingPerson, partnerId))
 
     }
 

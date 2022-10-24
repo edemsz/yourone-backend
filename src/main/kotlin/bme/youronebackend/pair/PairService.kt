@@ -1,5 +1,6 @@
 package bme.youronebackend.pair
 
+import bme.youronebackend.basic.ResourceAlreadyExistsException
 import bme.youronebackend.basic.ResourceNotFoundException
 import bme.youronebackend.person.Person
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,11 +33,21 @@ class PairService {
         throw ResourceNotFoundException()
     }
 
-    fun replyToPartner(replyingPerson: Person, otherPerson: Person, reply:Boolean) {
+    fun replyToPartner(replyingPerson: Person, otherPerson: Person, reply:Boolean):Boolean {
         val pair = getPair(replyingPerson, otherPerson)
-        if (pair.a == replyingPerson) pair.responseA = reply
-        if (pair.b == replyingPerson) pair.responseB = reply
+        if (pair.a == replyingPerson) {
+            if(pair.responseA!=null)
+                throw ResourceAlreadyExistsException()
+            pair.responseA = reply
+        }
+        if (pair.b == replyingPerson) {
+            if(pair.responseB!=null)
+                throw ResourceAlreadyExistsException()
+            pair.responseB = reply
+        }
         repository.save(pair)
+        return pair.responseA==true && pair.responseB==true
+
     }
 
     fun getMatchedPersonsByPerson(partner1:Person):List<Person>{

@@ -67,7 +67,6 @@ open class DataLoader @Autowired constructor
             p.name = randomMaleName()
         if (p.gender == 0)
             p.name = randomFemaleName()
-        println(p.city)
         return p
     }
 

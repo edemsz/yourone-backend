@@ -1,5 +1,6 @@
-package bme.youronebackend
+package bme.youronebackend.message
 
+import bme.youronebackend.pair.PairEntity
 import bme.youronebackend.person.Person
 import java.time.Instant
 import javax.persistence.Column
@@ -14,7 +15,10 @@ class MessageEntity {
     val id: Long? = null
 
     @Column
-    val text: String = ""
+    var text: String = ""
+
+    @ManyToOne
+    lateinit var pair:PairEntity
 
     @ManyToOne
     lateinit var sender: Person
@@ -24,4 +28,12 @@ class MessageEntity {
 
     @Column
     val sentTime = Instant.now()
+
+    @Column
+    var state: MessageState? = MessageState.SENT
+}
+
+
+enum class MessageState{
+    SENT,DELIVERED,SEEN
 }

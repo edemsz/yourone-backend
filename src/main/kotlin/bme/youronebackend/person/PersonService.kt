@@ -126,23 +126,25 @@ class PersonService
         return (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
     }
 
-    fun noMatch(denyingPerson: Person, otherPersonId: Long) {
+    fun noMatch(denyingPerson: Person, otherPersonId: Long): Boolean {
         return noMatch(denyingPerson, repository.getById(otherPersonId))
     }
 
-    private fun noMatch(denyingPerson: Person, otherPerson: Person) {
+    private fun noMatch(denyingPerson: Person, otherPerson: Person): Boolean {
         return pairService.replyToPartner(denyingPerson, otherPerson,false)
     }
-    fun yesMatch(denyingPerson: Person, otherPersonId: Long) {
+    fun yesMatch(denyingPerson: Person, otherPersonId: Long): Boolean {
         return yesMatch(denyingPerson, repository.getById(otherPersonId))
     }
 
-    private fun yesMatch(denyingPerson: Person, otherPerson: Person) {
+    private fun yesMatch(denyingPerson: Person, otherPerson: Person): Boolean {
         return pairService.replyToPartner(denyingPerson, otherPerson,true)
     }
 
     fun getMatches(swipingPerson: Person):List<Person> =
         pairService.getMatchedPersonsByPerson(swipingPerson)
+
+    fun getById(id: Long): Person =repository.getById(id)
 }
 
 @Service
