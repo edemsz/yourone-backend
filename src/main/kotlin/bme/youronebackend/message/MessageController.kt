@@ -28,12 +28,12 @@ class MessageController {
 
 
     @MessageMapping("/chat")
-    fun processMessage(@Payload chatMessageDto: SendMessageDTO, @RequestHeader("Authorization") authHeader: String?) {
+    fun processMessage(@Payload chatMessageDto: SendMessageDTO) {
         println("kezdjünk bele tesó")
-        println(authHeader)
+        //println(authHeader)
         println(chatMessageDto.text)
         println(chatMessageDto.addresseeId)
-        val sender = personService.getCurrentMember(authHeader, null)
+        val sender = personService.getById(502)//personService.getCurrentMember(authHeader, null)
         println("process message")
 
         val message=messageService.sendMessage(chatMessageDto, sender)
