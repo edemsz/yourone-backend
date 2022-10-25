@@ -30,9 +30,13 @@ class MessageController {
     @MessageMapping("/chat")
     fun processMessage(@Payload chatMessageDto: SendMessageDTO, @RequestHeader("Authorization") authHeader: String?) {
         val sender = personService.getCurrentMember(authHeader, null)
+        println("process message")
+        println(chatMessageDto.text)
+        println(chatMessageDto.addresseeId)
 
         val message=messageService.sendMessage(chatMessageDto, sender)
 
+        println("szólok socket")
         messagingTemplate.convertAndSendToUser(message.addressee.username!!,
             "/queue/messages",
             ChatNotification(message.id!!, message.sender.id, message.sender.name))

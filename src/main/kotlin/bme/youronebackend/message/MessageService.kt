@@ -24,6 +24,11 @@ class MessageService {
         message.addressee = personService.getById(messageDto.addresseeId)
         message.sender = sender
         message.pair = pairService.getPair(sender, message.addressee)
+        println(message.addressee.name)
+        println(message.sender.name)
+        println(message.pair.a.name)
+        println(message.pair.b.name)
+        println(message.text)
         return messageRepository.save(message)
 
     }
