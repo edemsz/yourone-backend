@@ -6,17 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
 import java.time.LocalDate
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
+
 @Component
-open class DataLoader @Autowired constructor
-    (
+open class DataLoader @Autowired constructor(
     private var personService: PersonService,
 ) : ApplicationRunner {
 
@@ -32,13 +29,13 @@ open class DataLoader @Autowired constructor
     }
 
     private fun randomNumber(maxInclusive: Int): Int {
-        return Random.nextInt(0, maxInclusive )
+        return Random.nextInt(0, maxInclusive)
     }
 
     private fun createPerson(): Person {
         val p = Person("a", "random@gmail.com", "", randomDate())
         p.gender = randomNumber(3)
-        p.city =randomCity()
+        p.city = randomCity()
         p.jobType = randomNumber(28)
         p.eduLevel = randomNumber(8)
         p.cigarettes = randomNumber(5)
@@ -59,14 +56,10 @@ open class DataLoader @Autowired constructor
         p.glasses = randomNumber(4)
         p.sportiness = randomNumber(5)
         p.shape = randomNumber(6)
-        if (p.gender!! >0 )
-            p.facialHair = randomNumber(3)
-        if (p.gender == 0)
-            p.breastSize = randomNumber(7)
-        if (p.gender!! >0)
-            p.name = randomMaleName()
-        if (p.gender == 0)
-            p.name = randomFemaleName()
+        if (p.gender!! > 0) p.facialHair = randomNumber(3)
+        if (p.gender == 0) p.breastSize = randomNumber(7)
+        if (p.gender!! > 0) p.name = randomMaleName()
+        if (p.gender == 0) p.name = randomFemaleName()
         return p
     }
 
@@ -78,26 +71,32 @@ open class DataLoader @Autowired constructor
     }
 
     private fun randomMaleName(): String {
-        val inputStream : InputStream = FileInputStream("static/osszesffi.txt")
-        val text = inputStream.bufferedReader(Charsets.ISO_8859_1).use { it.readText()}
+        val content = getText("osszesffi.txt")
+
+
+        val text = content// file.bufferedReader(Charsets.ISO_8859_1).use { it.readText()}
         val list = text.split("\n")
         return list.random()
     }
 
     private fun randomCity(): String {
-        val inputStream : InputStream = FileInputStream("static/varosok.txt")
-        val text = inputStream.bufferedReader(Charsets.UTF_8).use { it.readText()}
+        val content = getText("varosok.txt")
+
+
+        val text = content//file.bufferedReader(Charsets.UTF_8).use { it.readText() }
         val list = text.split("\n")
         return list.random()
     }
 
     private fun randomFemaleName(): String {
+        val content = getText("osszesnoi.txt")
 
-        val inputStream : InputStream = FileInputStream("static/osszesnoi.txt")
-        val text = inputStream.bufferedReader(Charsets.ISO_8859_1).use { it.readText()}
+        val text = content//file.bufferedReader(Charsets.ISO_8859_1).use { it.readText()}
         val list = text.split("\n")
         return list.random()
     }
 
-
+    fun getText(path: String): String {
+        return this::class.java.classLoader.getResource(path)!!.readText()
+    }
 }
