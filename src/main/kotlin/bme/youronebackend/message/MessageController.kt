@@ -37,7 +37,7 @@ class MessageController {
         val message=messageService.sendMessage(chatMessageDto, sender)
 
         println("szólok socket")
-        messagingTemplate.convertAndSendToUser(message.addressee.username!!,
+        messagingTemplate.convertAndSendToUser(message.addressee.id.toString(),
             "/queue/messages",
             ChatNotification(message.id!!, message.sender.id, message.sender.name))
     }
