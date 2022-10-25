@@ -17,7 +17,7 @@ class Person() {
         name: String,
         email: String, photo: String?, birthDate: LocalDate?,
     ) : this() {
-        this.name=name
+        this.name = name
         this.email = email
         this.photo = photo
         this.birthDate = birthDate
@@ -71,10 +71,23 @@ class Person() {
     var maritalStatus: Int? = null
 
     @Column(nullable = true)
-    var musicalTaste: Int? = null
+    var _musicalTaste: String? = null
+
+    var musicalTaste: List<Int>
+        @Transient get() = StringToIntListConverter.stringToIntList(_musicalTaste)
+        set(value) {
+            this._musicalTaste = StringToIntListConverter.intListToString(value)
+        }
+
 
     @Column(nullable = true)
-    var filmTaste: Int? = null
+    var _filmTaste: String? = null
+
+    var filmTaste: List<Int>
+        @Transient get() = StringToIntListConverter.stringToIntList(_filmTaste)
+        set(value) {
+            this._filmTaste = StringToIntListConverter.intListToString(value)
+        }
 
     @Column(nullable = true)
     var religion: Int? = null
@@ -83,10 +96,24 @@ class Person() {
     var horoscope: Int? = null
 
     @Column(nullable = true)
-    var languages: Int? = null
+    var _languages: String? = null
+
+    var languages: List<Int>
+        @Transient get() = StringToIntListConverter.stringToIntList(_languages)
+        set(value) {
+            this._languages = StringToIntListConverter.intListToString(value)
+        }
+
 
     @Column(nullable = true)
-    var interests: Int? = null
+    var _interests: String? = null
+
+
+    var interests: List<Int>
+        @Transient get() = StringToIntListConverter.stringToIntList(_interests)
+        set(value) {
+            this._interests = StringToIntListConverter.intListToString(value)
+        }
 
 
     @Column(nullable = true)
@@ -120,8 +147,14 @@ class Person() {
 
     @Column(nullable = true)
     var breastSize: Int? = null
+
     @Column(nullable = true)
     var facialHair: Int? = null
+}
 
+object StringToIntListConverter {
+    fun stringToIntList(s: String?): List<Int> =
+        s?.split(",")?.filter { it.isNotEmpty() }?.map { it.toInt() } ?: emptyList()
 
+    fun intListToString(l: List<Int>): String = l.joinToString(",")
 }

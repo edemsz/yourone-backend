@@ -32,6 +32,10 @@ open class DataLoader @Autowired constructor(
         return Random.nextInt(0, maxInclusive)
     }
 
+    private fun randomNumberList(maxInclusive: Int, listNumber: Int): List<Int> {
+        return (0..maxInclusive).shuffled().take(Random.nextInt(listNumber))
+    }
+
     private fun createPerson(): Person {
         val p = Person("a", "random@gmail.com", "", randomDate())
         p.gender = randomNumber(3)
@@ -42,13 +46,13 @@ open class DataLoader @Autowired constructor(
         p.childrenNumber = randomNumber(4)
         p.maritalStatus = randomNumber(5)
         p.alcohol = randomNumber(4)
-        p.musicalTaste = randomNumber(15)
-        p.filmTaste = randomNumber(14)
+        p.musicalTaste =randomNumberList(15,3)
+        p.filmTaste = randomNumberList(14,7)
         p.religion = randomNumber(25)
         p.horoscope = randomNumber(12)
-        p.languages = randomNumber(13)
-        p.interests = randomNumber(12)
-        p.height = (java.util.Random().nextGaussian() * 60 + 150).roundToInt()
+        p.languages = randomNumberList(13,3)
+        p.interests = randomNumberList(12,4)
+        p.height = (java.util.Random().nextGaussian() * 30 + 180).roundToInt()
         p.tattoo = randomNumber(4)
         p.hairColour = randomNumber(7)
         p.eyeColour = randomNumber(5)
@@ -99,4 +103,5 @@ open class DataLoader @Autowired constructor(
     fun getText(path: String): String {
         return this::class.java.classLoader.getResource(path)!!.readText()
     }
+
 }

@@ -23,6 +23,7 @@ open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS()
+        registry.addEndpoint("/ws2").setAllowedOrigins("*")
     }
 
     override fun configureMessageConverters(messageConverters: MutableList<MessageConverter?>): Boolean {

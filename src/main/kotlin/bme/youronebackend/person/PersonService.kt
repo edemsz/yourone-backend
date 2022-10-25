@@ -123,7 +123,8 @@ class PersonService
         if (a.sportiness == b.sportiness) matchingAttribute++
         if (a.tattoo == b.tattoo) matchingAttribute++
 
-        return (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
+        val matchPct= (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
+        return matchPct
     }
 
     fun noMatch(denyingPerson: Person, otherPersonId: Long): Boolean {
@@ -131,20 +132,21 @@ class PersonService
     }
 
     private fun noMatch(denyingPerson: Person, otherPerson: Person): Boolean {
-        return pairService.replyToPartner(denyingPerson, otherPerson,false)
+        return pairService.replyToPartner(denyingPerson, otherPerson, false)
     }
+
     fun yesMatch(denyingPerson: Person, otherPersonId: Long): Boolean {
         return yesMatch(denyingPerson, repository.getById(otherPersonId))
     }
 
     private fun yesMatch(denyingPerson: Person, otherPerson: Person): Boolean {
-        return pairService.replyToPartner(denyingPerson, otherPerson,true)
+        return pairService.replyToPartner(denyingPerson, otherPerson, true)
     }
 
-    fun getMatches(swipingPerson: Person):List<Person> =
+    fun getMatches(swipingPerson: Person): List<Person> =
         pairService.getMatchedPersonsByPerson(swipingPerson)
 
-    fun getById(id: Long): Person =repository.getById(id)
+    fun getById(id: Long): Person = repository.getById(id)
 }
 
 @Service
@@ -161,3 +163,14 @@ class PersonAuthService : UserDetailsService {
         return User().fromPerson(member)
     }
 }
+
+data class Match(
+    var pct: Double,
+    var commonAttributes:List<CommonAttributes>
+    )
+
+data class CommonAttributes(
+    val name:String,
+    var matches:Map<Int,Boolean>
+)
+
