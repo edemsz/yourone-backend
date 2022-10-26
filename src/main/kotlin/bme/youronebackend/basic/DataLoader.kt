@@ -5,6 +5,7 @@ import bme.youronebackend.person.PersonService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.concurrent.ThreadLocalRandom
@@ -17,6 +18,10 @@ open class DataLoader @Autowired constructor(
     private var personService: PersonService,
 ) : ApplicationRunner {
 
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
+
+
 
     override fun run(args: ApplicationArguments?) {
         manyPeople()
@@ -24,7 +29,7 @@ open class DataLoader @Autowired constructor(
 
     fun manyPeople() {
         for (i in 0..500) {
-            personService.add(createPerson())
+            val p=personService.add(createPerson(i))
         }
     }
 
@@ -36,8 +41,11 @@ open class DataLoader @Autowired constructor(
         return (0..maxInclusive).shuffled().take(Random.nextInt(listNumber))
     }
 
-    private fun createPerson(): Person {
-        val p = Person("a", "random@gmail.com", "", randomDate())
+    private fun createPerson(i:Int): Person {
+        val id=i+1
+        val p = Person("a", "random$id@gmail.com", "", randomDate())
+        p.username="random$id@gmail.com"
+        p.password=passwordEncoder.encode("sziaocsike")
         p.gender = randomNumber(3)
         p.city = randomCity()
         p.jobType = randomNumber(28)

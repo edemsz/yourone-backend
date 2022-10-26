@@ -54,7 +54,7 @@ class PersonService
 
 
     fun register(registerData: RegistrationDTO) {
-        val person = this.repository.findByUsername(registerData.username)!!
+        val person = this.repository.findByEmail(registerData.username)!!
         person.password = passwordEncoder.encode(registerData.password)
         person.username = registerData.username
         this.updateById(person.id, person)
@@ -69,14 +69,14 @@ class PersonService
 
         val user: User = authentication.principal as User
         val jwtCookie = jwtTools.createAccessToken(user.username, null, null)
-        val tokens = Tokens(jwtCookie.toString(), "")
+        val tokens = Tokens(jwtCookie.toString(), "",getCurrentMember(jwtCookie,jwtCookie).id)
         return tokens
     }
 
     fun getCurrentMember(authHeader: String?, cookie: String?): Person {
         val jwt: String = authHeader ?: cookie ?: throw ResourceNotFoundException()
         val username = jwtTools.getUsernameFromJwt(jwt) ?: throw ResourceNotFoundException()
-        val member = repository.findByUsername(username) ?: throw ResourceNotFoundException()
+        val member = repository.findByEmail(username) ?: throw ResourceNotFoundException()
         return member
     }
 
@@ -153,8 +153,8 @@ class PersonAuthService : UserDetailsService {
     @Autowired
     lateinit var personRepository: PersonRepository
 
-    override fun loadUserByUsername(username: String?): UserDetails {
-        val member = personRepository.findByUsername(username!!) ?: throw UsernameNotFoundException("User not found")
+    override fun loadUserByUsername(email: String?): UserDetails {
+        val member = personRepository.findByEmail(email!!)!!
         return buildUserFromMember(member)
     }
 
