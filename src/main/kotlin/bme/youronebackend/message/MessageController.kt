@@ -39,7 +39,7 @@ class MessageController {
         println("szólok socket")
         messagingTemplate.convertAndSendToUser(message.addressee.id.toString(),
             "/queue/messages",
-            ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text))
+            ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text,message.sentTime))
     }
 
     @GetMapping("api/chat/{addresseeId}/count")
