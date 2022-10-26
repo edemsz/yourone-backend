@@ -17,7 +17,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
         config.enableSimpleBroker("/user")
-        config.setApplicationDestinationPrefixes("/api")
+        config.setApplicationDestinationPrefixes("/app")
         config.setUserDestinationPrefix("/user")
     }
 

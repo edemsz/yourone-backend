@@ -62,8 +62,7 @@ class PersonService
 
     fun login(loginData: LoginDTO): Tokens {
         val authentication: Authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(
-            loginData.username,
-            loginData.password))
+            loginData.username, loginData.password))
 
 
         SecurityContextHolder.getContext().authentication = authentication
@@ -123,7 +122,7 @@ class PersonService
         if (a.sportiness == b.sportiness) matchingAttribute++
         if (a.tattoo == b.tattoo) matchingAttribute++
 
-        val matchPct= (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
+        val matchPct = (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
         return matchPct
     }
 
@@ -166,11 +165,11 @@ class PersonAuthService : UserDetailsService {
 
 data class Match(
     var pct: Double,
-    var commonAttributes:List<CommonAttributes>
-    )
+    var commonAttributes: List<CommonAttributes>,
+)
 
 data class CommonAttributes(
-    val name:String,
-    var matches:Map<Int,Boolean>
+    val name: String,
+    var matches: Map<Int, Boolean>,
 )
 
