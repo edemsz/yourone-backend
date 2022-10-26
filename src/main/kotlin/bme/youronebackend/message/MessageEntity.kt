@@ -3,14 +3,12 @@ package bme.youronebackend.message
 import bme.youronebackend.pair.PairEntity
 import bme.youronebackend.person.Person
 import java.time.Instant
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
 class MessageEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     val id: Long? = null
 

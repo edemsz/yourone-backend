@@ -60,5 +60,7 @@ class MessageService {
         return matches.filter { pair -> messageRepository.existsByPair(pair) }.map { pair -> pair.getOtherPerson(user) }
     }
 
+    fun allChats(): List<MessageEntity> = messageRepository.findAll()
+
 
 }
