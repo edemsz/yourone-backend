@@ -37,7 +37,7 @@ class MessageController {
         println(chatMessageDto.text)
         println(chatMessageDto.addresseeId)
 
-        val sender = personService.getById(502)//personService.getCurrentMember(authHeader, null)
+        val sender = personService.getCurrentMember(chatMessageDto.jwt, null)
         println("process message")
 
         val message = messageService.sendMessage(chatMessageDto, sender)
@@ -82,7 +82,7 @@ class MessageController {
     fun test(@RequestBody dto: SendMessageDTO): ResponseEntity<ChatNotification> {
         println(dto.text)
         println(dto.addresseeId)
-        val sender = personService.getById(502)//personService.getCurrentMember(authHeader, null)
+        val sender = personService.getCurrentMember(dto.jwt, null)
         println("process message")
 
         val message = messageService.sendMessage(dto, sender)
