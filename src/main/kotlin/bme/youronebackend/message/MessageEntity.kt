@@ -3,6 +3,7 @@ package bme.youronebackend.message
 import bme.youronebackend.pair.PairEntity
 import bme.youronebackend.person.Person
 import java.time.Instant
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -25,7 +26,7 @@ class MessageEntity {
     lateinit var addressee: Person
 
     @Column
-    val sentTime = Instant.now()
+    val sentTime = LocalDateTime.now()
 
     @Column
     var state: MessageState? = MessageState.SENT

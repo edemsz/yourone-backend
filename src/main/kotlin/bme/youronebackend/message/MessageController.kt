@@ -71,7 +71,7 @@ class MessageController {
     }
 
     @PostMapping("/api/chat/post-test")
-    fun test(@RequestBody dto: SendMessageDTO): ResponseEntity<String> {
+    fun test(@RequestBody dto: SendMessageDTO): ResponseEntity<ChatNotification> {
         println(dto.text)
         println(dto.addresseeId)
         val sender = personService.getById(502)//personService.getCurrentMember(authHeader, null)
@@ -79,7 +79,9 @@ class MessageController {
 
         val message = messageService.sendMessage(dto, sender)
 
-        return ResponseEntity.ok("szia")
+        val noti=ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text,message.sentTime)
+
+        return ResponseEntity.ok(noti)
     }
 
     @GetMapping("/api/chat/all")
