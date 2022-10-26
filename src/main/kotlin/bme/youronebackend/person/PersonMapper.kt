@@ -36,7 +36,7 @@ class PersonMapperFacade {
     fun entityToDto(entity: Person): PersonAllDTO = personMapper.entityToDto(entity)
     fun pairToDto(mappingSource: Person, otherPerson: Person): PersonAllDTO {
         val dto = personMapper.entityToDto(mappingSource)
-        dto.matchPct =personService.calculatePct(mappingSource,otherPerson)
+        dto.match =personService.calculatePct(mappingSource,otherPerson)
         return dto
     }
 

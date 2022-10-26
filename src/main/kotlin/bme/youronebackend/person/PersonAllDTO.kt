@@ -36,5 +36,5 @@ data class PersonAllDTO(
     var interests: List<Int>? = null,
     var shape: Int? = null,
     var facialHair: Int? = null,
-    var matchPct: Int? = null,
+    var match: Match? = null,
 )

@@ -1,6 +1,5 @@
 package bme.youronebackend.person
 
-import bme.youronebackend.auth.JWTTools
 import bme.youronebackend.auth.LoginDTO
 import bme.youronebackend.auth.RegistrationDTO
 import bme.youronebackend.auth.Tokens
@@ -17,8 +16,6 @@ open class PersonController {
     @Autowired
     lateinit var personService: PersonService
 
-    @Autowired
-    lateinit var jwtTools: JWTTools
 
     @Autowired
     lateinit var personMapper: PersonMapperFacade
@@ -102,10 +99,9 @@ open class PersonController {
     @GetMapping("/all-partners")
     fun getAllPartners(@RequestHeader("Authorization") authHeader: String?): ResponseEntity<List<PersonAllDTO>> {
         val swipingPerson = personService.getCurrentMember(authHeader, null)
-        val matches=personService.getMatches(swipingPerson)
-        return ResponseEntity.ok(matches.map { personMapper.pairToDto(it,swipingPerson) })
+        val matches = personService.getMatches(swipingPerson)
+        return ResponseEntity.ok(matches.map { personMapper.pairToDto(it, swipingPerson) })
     }
-
 
 
 }
