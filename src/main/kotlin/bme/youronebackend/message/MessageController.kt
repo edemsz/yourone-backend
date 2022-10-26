@@ -10,6 +10,12 @@ import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
+import java.time.ZoneId
+
+import java.time.ZonedDateTime
+
+
+
 
 
 @Controller
@@ -37,9 +43,11 @@ class MessageController {
         val message = messageService.sendMessage(chatMessageDto, sender)
 
         println("szólok socket")
+        val zdt: ZonedDateTime = message.sentTime.atZone(ZoneId.of("Europe/Budapest"))
+
         messagingTemplate.convertAndSendToUser(message.addressee.id.toString(),
             "/queue/messages",
-            ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text,message.sentTime))
+            ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text,zdt.toEpochSecond()))
     }
 
     @GetMapping("api/chat/{addresseeId}/count")
@@ -79,7 +87,10 @@ class MessageController {
 
         val message = messageService.sendMessage(dto, sender)
 
-        val noti=ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text,message.sentTime)
+        val zdt: ZonedDateTime = message.sentTime.atZone(ZoneId.of("Europe/Budapest"))
+
+
+        val noti=ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text,zdt.toEpochSecond())
 
         return ResponseEntity.ok(noti)
     }
