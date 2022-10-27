@@ -37,4 +37,9 @@ data class PersonAllDTO(
     var shape: Int? = null,
     var facialHair: Int? = null,
     var match: Match? = null,
-)
+
+    var minAge: Int? = null,
+    var maxAge: Int? = null,
+    var chemistry: Int? = null,
+
+    )

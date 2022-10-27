@@ -38,7 +38,7 @@ open class DataLoader @Autowired constructor(
     }
 
     private fun randomNumberList(maxInclusive: Int, listNumber: Int): List<Int> {
-        return (0..maxInclusive).shuffled().take(Random.nextInt(listNumber))
+        return (0 until maxInclusive).shuffled().take(Random.nextInt(listNumber))
     }
 
     private fun createPerson(i:Int): Person {

@@ -80,6 +80,14 @@ class PersonService
         return member
     }
 
+    private fun mayBePairs(swipingPerson: Person, otherPerson: Person):Boolean{
+        if( isPotentialPair(swipingPerson, otherPerson))
+            if(otherPerson.age in swipingPerson.minAge!!..swipingPerson.minAge!!)
+                if(calculatePct(swipingPerson,otherPerson).pct> swipingPerson.chemistry!!)
+                    return true
+        return false
+    }
+
     fun getNextPersons(swipingPerson: Person): Array<Person> {
 
         val swipingGender = swipingPerson.gender
@@ -89,7 +97,7 @@ class PersonService
         val otherPeople = repository.findAllByGender(otherGender)
         val numberOfPeople = 10
         for (person in otherPeople) {
-            if (isPotentialPair(swipingPerson, person)) potentialPairs += person
+            if (mayBePairs(swipingPerson,person)) potentialPairs += person
             if (potentialPairs.size == numberOfPeople) return potentialPairs.toTypedArray()
         }
         return potentialPairs.toTypedArray()

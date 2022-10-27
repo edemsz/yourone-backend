@@ -2,6 +2,7 @@ package bme.youronebackend.person
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.LocalDate
+import java.time.Period
 import javax.persistence.*
 
 @Entity
@@ -36,6 +37,11 @@ class Person() {
 
     @Column(nullable = true)
     var birthDate: LocalDate? = null
+
+    val age: Int
+        @Transient get() = Period.between(this.birthDate, LocalDate.now()).years
+
+
 
 
     @Column(nullable = true)
@@ -150,6 +156,16 @@ class Person() {
 
     @Column(nullable = true)
     var facialHair: Int? = null
+
+    @Column
+    var minAge:Int?=null
+
+    @Column
+    var maxAge:Int?=null
+
+    @Column
+    var chemistry:Int?=null
+
 }
 
 object StringToIntListConverter {

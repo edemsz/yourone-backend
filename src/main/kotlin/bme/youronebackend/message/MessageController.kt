@@ -48,6 +48,11 @@ class MessageController {
         messagingTemplate.convertAndSendToUser(message.addressee.id.toString(),
             "/queue/messages",
             ChatNotification(message.id!!, message.sender.id, message.sender.name,message.text,zdt.toEpochSecond()))
+
+        messagingTemplate.convertAndSendToUser(message.sender.id.toString(),
+            "/queue/messages",
+            ChatNotification(message.id, message.sender.id, message.sender.name,message.text,zdt.toEpochSecond()))
+
     }
 
     @GetMapping("api/chat/{addresseeId}/count")

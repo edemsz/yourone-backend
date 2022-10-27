@@ -35,7 +35,9 @@ data class RegistrationDTO(
     var interests: List<Int>? = null,
     var shape: Int? = null,
     var facialHair: Int? = null,
-
+    var minAge: Int? = null,
+    var maxAge: Int? = null,
+    var chemistry: Int? = null,
 )
 
 data class LoginDTO(
