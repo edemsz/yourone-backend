@@ -168,7 +168,7 @@ class PersonService
         } else match.commonAttributes += CommonAttributes("horoscope",
             mapOf(Pair(otherPerson.horoscope!!, false)))
 
-        val interestAttributes = CommonAttributes("interest", emptyMap())
+        val interestAttributes = CommonAttributes("interests", emptyMap())
         otherPerson.interests.forEach {
             if (swipingUser.interests.contains(it)) {
                 matchingAttribute += 1.0 / swipingUser.interests.size
