@@ -74,7 +74,7 @@ open class DataLoader @Autowired constructor(
         if (p.gender == 0) p.name = randomFemaleName()
         p.minAge=18
         p.maxAge=Random.nextInt(25,36)
-        p.chemistry=Random.nextInt(10,40)
+        p.chemistry=Random.nextInt(1,5)
 
         return p
     }
