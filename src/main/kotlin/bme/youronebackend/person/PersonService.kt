@@ -80,10 +80,13 @@ class PersonService
         return member
     }
 
-    private fun mayBePairs(swipingPerson: Person, otherPerson: Person):Boolean{
-        if( isPotentialPair(swipingPerson, otherPerson))
-            if(otherPerson.age in swipingPerson.minAge!!..swipingPerson.minAge!!)
-                if(calculatePct(swipingPerson,otherPerson).pct> swipingPerson.chemistry!!)
+    private fun mayBePairs(swipingPerson: Person, otherPerson: Person): Boolean {
+        if ((swipingPerson.minAge == null) || (swipingPerson.maxAge == null) || (otherPerson.age in (swipingPerson.minAge!!..swipingPerson.maxAge!!)))
+            if (swipingPerson.chemistry == null || calculatePct(swipingPerson,
+                    otherPerson).pct > swipingPerson.chemistry!!
+            )
+                if (isPotentialPair(swipingPerson, otherPerson))
+
                     return true
         return false
     }
@@ -97,7 +100,7 @@ class PersonService
         val otherPeople = repository.findAllByGender(otherGender)
         val numberOfPeople = 10
         for (person in otherPeople) {
-            if (mayBePairs(swipingPerson,person)) potentialPairs += person
+            if (mayBePairs(swipingPerson, person)) potentialPairs += person
             if (potentialPairs.size == numberOfPeople) return potentialPairs.toTypedArray()
         }
         return potentialPairs.toTypedArray()
@@ -245,10 +248,9 @@ class PersonService
 
 
         val matchPct = (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
-        match.pct=matchPct
+        match.pct = matchPct
         return match
     }
-
 
 
     fun noMatch(denyingPerson: Person, otherPersonId: Long): Boolean {

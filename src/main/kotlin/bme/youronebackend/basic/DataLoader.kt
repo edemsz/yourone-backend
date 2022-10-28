@@ -28,7 +28,7 @@ open class DataLoader @Autowired constructor(
     }
 
     fun manyPeople() {
-        for (i in 0..500) {
+        for (i in 0..1000) {
             val p=personService.add(createPerson(i))
         }
     }
@@ -38,7 +38,7 @@ open class DataLoader @Autowired constructor(
     }
 
     private fun randomNumberList(maxInclusive: Int, listNumber: Int): List<Int> {
-        return (0 until maxInclusive).shuffled().take(Random.nextInt(listNumber))
+        return (0 until maxInclusive).shuffled().take(Random.nextInt(listNumber)).sorted()
     }
 
     private fun createPerson(i:Int): Person {
@@ -72,6 +72,10 @@ open class DataLoader @Autowired constructor(
         if (p.gender == 0) p.breastSize = randomNumber(7)
         if (p.gender!! > 0) p.name = randomMaleName()
         if (p.gender == 0) p.name = randomFemaleName()
+        p.minAge=18
+        p.maxAge=Random.nextInt(25,36)
+        p.chemistry=Random.nextInt(10,40)
+
         return p
     }
 
