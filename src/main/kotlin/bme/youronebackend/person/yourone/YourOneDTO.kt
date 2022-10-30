@@ -1,15 +1,6 @@
-package bme.youronebackend.auth
+package bme.youronebackend.person.yourone
 
-import bme.youronebackend.person.yourone.YourOneDTO
-import java.time.LocalDate
-
-
-data class RegistrationDTO(
-    var username: String,
-    var password: String,
-    var name: String,
-    var email: String,
-    var birthDate: LocalDate,
+data class YourOneDTO(
     var height: Int? = null,
     var gender: Int? = null,
     var tattoo: Int? = null,
@@ -35,13 +26,4 @@ data class RegistrationDTO(
     var interests: List<Int>? = null,
     var shape: Int? = null,
     var facialHair: Int? = null,
-    var minAge: Int? = null,
-    var maxAge: Int? = null,
-    var chemistry: Int? = null,
-    var theirOne: YourOneDTO? = null,
-)
-
-data class LoginDTO(
-    var username: String,
-    var password: String,
 )

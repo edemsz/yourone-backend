@@ -1,8 +1,10 @@
 package bme.youronebackend.person
 
 import bme.youronebackend.auth.*
+import bme.youronebackend.basic.ResourceAlreadyExistsException
 import bme.youronebackend.basic.ResourceNotFoundException
 import bme.youronebackend.pair.PairService
+import bme.youronebackend.person.yourone.YourOneRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -12,11 +14,12 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.lang.Integer.max
 import kotlin.math.roundToInt
 
 
 @Service
-class PersonService
+open class PersonService
 @Autowired constructor() {
     fun getAll(): MutableList<Person> {
         return repository.findAll()
@@ -24,6 +27,9 @@ class PersonService
 
     @Autowired
     lateinit var repository: PersonRepository
+
+    @Autowired
+    lateinit var yourOneRepository: YourOneRepository
 
     @Autowired
     lateinit var passwordEncoder: PasswordEncoder
@@ -39,6 +45,7 @@ class PersonService
 
 
     fun add(e: Person): Person {
+        e.theirOne?.let { yourOneRepository.save(it) }
         return repository.save(e)
     }
 
@@ -46,13 +53,16 @@ class PersonService
         if (id != entity.id && entity.id != -1L) {
             throw ResourceNotFoundException()
         }
+        entity.password = repository.findById(id).get().password
         entity.id = id
+        entity.theirOne?.let { yourOneRepository.save(it) }
         return repository.save(entity)
 
     }
 
 
     fun register(registerData: RegistrationDTO) {
+        if (repository.countByEmail(registerData.username) > 1) throw ResourceAlreadyExistsException()
         val person = this.repository.findByEmail(registerData.username)!!
         person.password = passwordEncoder.encode(registerData.password)
         person.username = registerData.username
@@ -81,13 +91,12 @@ class PersonService
     }
 
     private fun mayBePairs(swipingPerson: Person, otherPerson: Person): Boolean {
-        if ((swipingPerson.minAge == null) || (swipingPerson.maxAge == null) || (otherPerson.age in (swipingPerson.minAge!!..swipingPerson.maxAge!!)))
-            if (swipingPerson.chemistry == null || calculatePct(swipingPerson,
-                    otherPerson).pct > swipingPerson.chemistry!!
-            )
-                if (isPotentialPair(swipingPerson, otherPerson))
+        if ((swipingPerson.minAge == null) || (swipingPerson.maxAge == null) || (otherPerson.age in (swipingPerson.minAge!!..swipingPerson.maxAge!!))) if (swipingPerson.chemistry == null || calculatePct(
+                swipingPerson,
+                otherPerson).pct > swipingPerson.chemistry!!
+        ) if (isPotentialPair(swipingPerson, otherPerson))
 
-                    return true
+            return true
         return false
     }
 
@@ -129,22 +138,16 @@ class PersonService
 
         if (otherPerson.cigarettes == swipingUser.cigarettes) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("cigarettes",
-                mapOf(Pair(otherPerson.cigarettes!!, true)))
-        } else match.commonAttributes += CommonAttributes("cigarettes",
-            mapOf(Pair(otherPerson.cigarettes!!, false)))
+            match.commonAttributes += CommonAttributes("cigarettes", mapOf(Pair(otherPerson.cigarettes!!, true)))
+        } else match.commonAttributes += CommonAttributes("cigarettes", mapOf(Pair(otherPerson.cigarettes!!, false)))
         if (otherPerson.eduLevel == swipingUser.eduLevel) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("eduLevel",
-                mapOf(Pair(otherPerson.eduLevel!!, true)))
-        } else match.commonAttributes += CommonAttributes("eduLevel",
-            mapOf(Pair(otherPerson.eduLevel!!, false)))
+            match.commonAttributes += CommonAttributes("eduLevel", mapOf(Pair(otherPerson.eduLevel!!, true)))
+        } else match.commonAttributes += CommonAttributes("eduLevel", mapOf(Pair(otherPerson.eduLevel!!, false)))
         if (otherPerson.eyeColour == swipingUser.eyeColour) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("eyeColour",
-                mapOf(Pair(otherPerson.eyeColour!!, true)))
-        } else match.commonAttributes += CommonAttributes("eyeColour",
-            mapOf(Pair(otherPerson.eyeColour!!, false)))
+            match.commonAttributes += CommonAttributes("eyeColour", mapOf(Pair(otherPerson.eyeColour!!, true)))
+        } else match.commonAttributes += CommonAttributes("eyeColour", mapOf(Pair(otherPerson.eyeColour!!, false)))
 
         val filmTasteAttributes = CommonAttributes("filmTaste", emptyMap())
         otherPerson.filmTaste.forEach {
@@ -156,17 +159,13 @@ class PersonService
         match.commonAttributes += filmTasteAttributes
         if (otherPerson.glasses == swipingUser.glasses) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("glasses",
-                mapOf(Pair(otherPerson.glasses!!, true)))
-        } else match.commonAttributes += CommonAttributes("glasses",
-            mapOf(Pair(otherPerson.glasses!!, false)))
+            match.commonAttributes += CommonAttributes("glasses", mapOf(Pair(otherPerson.glasses!!, true)))
+        } else match.commonAttributes += CommonAttributes("glasses", mapOf(Pair(otherPerson.glasses!!, false)))
 
         if (otherPerson.horoscope == swipingUser.horoscope) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("horoscope",
-                mapOf(Pair(otherPerson.horoscope!!, true)))
-        } else match.commonAttributes += CommonAttributes("horoscope",
-            mapOf(Pair(otherPerson.horoscope!!, false)))
+            match.commonAttributes += CommonAttributes("horoscope", mapOf(Pair(otherPerson.horoscope!!, true)))
+        } else match.commonAttributes += CommonAttributes("horoscope", mapOf(Pair(otherPerson.horoscope!!, false)))
 
         val interestAttributes = CommonAttributes("interests", emptyMap())
         otherPerson.interests.forEach {
@@ -179,10 +178,8 @@ class PersonService
 
         if (otherPerson.jobType == swipingUser.jobType) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("jobType",
-                mapOf(Pair(otherPerson.jobType!!, true)))
-        } else match.commonAttributes += CommonAttributes("jobType",
-            mapOf(Pair(otherPerson.jobType!!, false)))
+            match.commonAttributes += CommonAttributes("jobType", mapOf(Pair(otherPerson.jobType!!, true)))
+        } else match.commonAttributes += CommonAttributes("jobType", mapOf(Pair(otherPerson.jobType!!, false)))
 
 
         val languageAttributes = CommonAttributes("languages", emptyMap())
@@ -196,8 +193,7 @@ class PersonService
 
         if (otherPerson.maritalStatus == swipingUser.maritalStatus) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("maritalStatus",
-                mapOf(Pair(otherPerson.maritalStatus!!, true)))
+            match.commonAttributes += CommonAttributes("maritalStatus", mapOf(Pair(otherPerson.maritalStatus!!, true)))
         } else match.commonAttributes += CommonAttributes("maritalStatus",
             mapOf(Pair(otherPerson.maritalStatus!!, false)))
 
@@ -213,38 +209,28 @@ class PersonService
 
         if (otherPerson.piercing == swipingUser.piercing) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("piercing",
-                mapOf(Pair(otherPerson.piercing!!, true)))
-        } else match.commonAttributes += CommonAttributes("piercing",
-            mapOf(Pair(otherPerson.piercing!!, false)))
+            match.commonAttributes += CommonAttributes("piercing", mapOf(Pair(otherPerson.piercing!!, true)))
+        } else match.commonAttributes += CommonAttributes("piercing", mapOf(Pair(otherPerson.piercing!!, false)))
 
         if (otherPerson.religion == swipingUser.religion) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("religion",
-                mapOf(Pair(otherPerson.religion!!, true)))
-        } else match.commonAttributes += CommonAttributes("religion",
-            mapOf(Pair(otherPerson.religion!!, false)))
+            match.commonAttributes += CommonAttributes("religion", mapOf(Pair(otherPerson.religion!!, true)))
+        } else match.commonAttributes += CommonAttributes("religion", mapOf(Pair(otherPerson.religion!!, false)))
 
         if (otherPerson.shape == swipingUser.shape) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("shape",
-                mapOf(Pair(otherPerson.shape!!, true)))
-        } else match.commonAttributes += CommonAttributes("shape",
-            mapOf(Pair(otherPerson.shape!!, false)))
+            match.commonAttributes += CommonAttributes("shape", mapOf(Pair(otherPerson.shape!!, true)))
+        } else match.commonAttributes += CommonAttributes("shape", mapOf(Pair(otherPerson.shape!!, false)))
 
         if (otherPerson.sportiness == swipingUser.sportiness) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("sportiness",
-                mapOf(Pair(otherPerson.sportiness!!, true)))
-        } else match.commonAttributes += CommonAttributes("sportiness",
-            mapOf(Pair(otherPerson.sportiness!!, false)))
+            match.commonAttributes += CommonAttributes("sportiness", mapOf(Pair(otherPerson.sportiness!!, true)))
+        } else match.commonAttributes += CommonAttributes("sportiness", mapOf(Pair(otherPerson.sportiness!!, false)))
 
         if (otherPerson.tattoo == swipingUser.tattoo) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("tattoo",
-                mapOf(Pair(otherPerson.sportiness!!, true)))
-        } else match.commonAttributes += CommonAttributes("tattoo",
-            mapOf(Pair(otherPerson.sportiness!!, false)))
+            match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.sportiness!!, true)))
+        } else match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.sportiness!!, false)))
 
 
         val matchPct = (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
@@ -272,6 +258,26 @@ class PersonService
     fun getMatches(swipingPerson: Person): List<Person> = pairService.getMatchedPersonsByPerson(swipingPerson)
 
     fun getById(id: Long): Person = repository.getById(id)
+    private fun savePhoto(person: Person, filePath: String) {
+        person.photos+=Photo(filePath)
+        updateById(person.id, person)
+    }
+
+    fun savePhoto(person: Person, filePath: String, index: Int?) {
+        if (index == null)
+            return savePhoto(person, filePath)
+        person.photos.add(index, Photo(filePath))
+        updateById(person.id, person)
+    }
+
+    fun changePictureOrder(swipingPerson: Person, oldNumber: Int, newNumber: Int): String {
+        if (swipingPerson.photos.size < max(oldNumber, newNumber))
+            throw ResourceNotFoundException()
+        val photo = swipingPerson.photos.removeAt(oldNumber)
+        swipingPerson.photos.add(newNumber, photo)
+        updateById(swipingPerson.id, swipingPerson)
+        return photo.name
+    }
 }
 
 @Service

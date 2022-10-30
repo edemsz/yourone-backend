@@ -1,28 +1,39 @@
 package bme.youronebackend.person
 
+import bme.youronebackend.person.yourone.YourOneEntity
+import bme.youronebackend.person.yourone.YourOneEntityBase
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.LocalDate
 import java.time.Period
+import javax.annotation.PostConstruct
 import javax.persistence.*
 
 @Entity
 @Table(name = "PERSON")
-class Person() {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long = -1
-
+class Person() : YourOneEntityBase() {
 
     constructor(
         name: String,
-        email: String, photo: String?, birthDate: LocalDate?,
+        email: String, birthDate: LocalDate?,
     ) : this() {
         this.name = name
         this.email = email
-        this.photo = photo
         this.birthDate = birthDate
     }
+
+    @OneToOne(cascade = [CascadeType.ALL])
+    var theirOne: YourOneEntity? = null
+
+    @PostConstruct
+    fun createTheirOne() {
+        if (this.theirOne == null)
+            this.theirOne = YourOneEntity()
+    }
+
+    @OneToMany(cascade = [CascadeType.ALL])
+    lateinit var photos:MutableList<Photo>
+
+
 
 
     @Column(nullable = false)
@@ -32,16 +43,12 @@ class Person() {
     @Column(nullable = false)
     lateinit var email: String
 
-    @Column(nullable = true)
-    var photo: String? = null
 
     @Column(nullable = true)
     var birthDate: LocalDate? = null
 
     val age: Int
         @Transient get() = Period.between(this.birthDate, LocalDate.now()).years
-
-
 
 
     @Column(nullable = true)
@@ -58,119 +65,45 @@ class Person() {
     @Column(nullable = true)
     var city: String? = null
 
-    @Column(nullable = true)
-    var jobType: Int? = null
-
-    @Column(nullable = true)
-    var eduLevel: Int? = null
-
-    @Column(nullable = true)
-    var cigarettes: Int? = null
-
-    @Column(nullable = true)
-    var alcohol: Int? = null
-
-    @Column(nullable = true)
-    var childrenNumber: Int? = null
-
-    @Column(nullable = true)
-    var maritalStatus: Int? = null
-
-    @Column(nullable = true)
-    var _musicalTaste: String? = null
-
-    var musicalTaste: List<Int>
-        @Transient get() = StringToIntListConverter.stringToIntList(_musicalTaste)
-        set(value) {
-            this._musicalTaste = StringToIntListConverter.intListToString(value)
-        }
-
-
-    @Column(nullable = true)
-    var _filmTaste: String? = null
-
-    var filmTaste: List<Int>
-        @Transient get() = StringToIntListConverter.stringToIntList(_filmTaste)
-        set(value) {
-            this._filmTaste = StringToIntListConverter.intListToString(value)
-        }
-
-    @Column(nullable = true)
-    var religion: Int? = null
-
-    @Column(nullable = true)
-    var horoscope: Int? = null
-
-    @Column(nullable = true)
-    var _languages: String? = null
-
-    var languages: List<Int>
-        @Transient get() = StringToIntListConverter.stringToIntList(_languages)
-        set(value) {
-            this._languages = StringToIntListConverter.intListToString(value)
-        }
-
-
-    @Column(nullable = true)
-    var _interests: String? = null
-
-
-    var interests: List<Int>
-        @Transient get() = StringToIntListConverter.stringToIntList(_interests)
-        set(value) {
-            this._interests = StringToIntListConverter.intListToString(value)
-        }
-
-
-    @Column(nullable = true)
-    var height: Int? = null
-
-
-    @Column(nullable = true)
-    var gender: Int? = null
-
-    @Column(nullable = true)
-    var tattoo: Int? = null
-
-    @Column(nullable = true)
-    var eyeColour: Int? = null
-
-    @Column(nullable = true)
-    var hairColour: Int? = null
-
-    @Column(nullable = true)
-    var piercing: Int? = null
-
-    @Column(nullable = true)
-    var glasses: Int? = null
-
-
-    @Column(nullable = true)
-    var sportiness: Int? = null
-
-    @Column(nullable = true)
-    var shape: Int? = null
-
-    @Column(nullable = true)
-    var breastSize: Int? = null
-
-    @Column(nullable = true)
-    var facialHair: Int? = null
 
     @Column
-    var minAge:Int?=null
+    var minAge: Int? = null
 
     @Column
-    var maxAge:Int?=null
+    var maxAge: Int? = null
 
     @Column
-    var chemistry:Int?=null
+    var chemistry: Int? = null
 
 }
 
-object StringToIntListConverter {
+@Entity
+class Photo() {
+    var name: String=""
+
+    constructor(name: String) : this() {
+        this.name = name
+    }
+
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    open var id: Long? = null
+
+}
+
+object StringToListConverter {
     fun stringToIntList(s: String?): List<Int> =
         s?.split(",")?.filter { it.isNotEmpty() }?.map { it.toInt() } ?: emptyList()
 
+    fun stringToStringList(s: String): List<String> {
+        return s.split(",").filter { it.isNotEmpty() }
+    }
+
     fun intListToString(l: List<Int>): String = l.joinToString(",")
+    fun stringListToString(l: List<String>): String {
+        return l.joinToString(",")
+    }
 }

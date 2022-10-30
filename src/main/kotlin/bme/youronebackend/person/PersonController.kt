@@ -3,11 +3,14 @@ package bme.youronebackend.person
 import bme.youronebackend.auth.LoginDTO
 import bme.youronebackend.auth.RegistrationDTO
 import bme.youronebackend.auth.Tokens
+import bme.youronebackend.person.file.StorageService
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 
 @RestController
@@ -15,6 +18,9 @@ import org.springframework.web.bind.annotation.*
 open class PersonController {
     @Autowired
     lateinit var personService: PersonService
+
+    @Autowired
+    lateinit var storageService: StorageService
 
 
     @Autowired
@@ -52,7 +58,7 @@ open class PersonController {
     @PutMapping("/{id}")
     @ApiOperation("Modifying user data")
     fun changeUserData(
-        @RequestBody newData: PersonAllDTO,
+        @RequestBody newData: CreatePersonDTO,
         @PathVariable(value = "id") id: Long,
     ): ResponseEntity<PersonAllDTO> {
         val newPerson = personMapper.allDtoToEntity(newData)
@@ -101,6 +107,47 @@ open class PersonController {
         val swipingPerson = personService.getCurrentMember(authHeader, null)
         val matches = personService.getMatches(swipingPerson)
         return ResponseEntity.ok(matches.map { personMapper.pairToDto(it, swipingPerson) })
+    }
+
+    @PostMapping("/upload")
+    fun uploadFile(
+        @RequestHeader("Authorization") authHeader: String?,
+        @RequestParam("file") file: MultipartFile,
+    ): ResponseEntity<String> {
+        val swipingPerson = personService.getCurrentMember(authHeader, null)
+        return ResponseEntity.ok(storageService.store(file, swipingPerson))
+    }
+
+    @ApiOperation("Uploads the picture to the index-th place of the pictures")
+    @PostMapping("/upload/{index}")
+    fun uploadFile(
+        @RequestHeader("Authorization") authHeader: String?,
+        @RequestParam("file") file: MultipartFile,
+        @PathVariable("index") index: Int,
+    ): ResponseEntity<String> {
+        val swipingPerson = personService.getCurrentMember(authHeader, null)
+        return ResponseEntity.ok(storageService.store(file, swipingPerson, index))
+    }
+
+    @PutMapping("/change-picture-oder/{oldNumber}/{newNumber}")
+    @ApiOperation("Moves the oldNumber-th picture to the newNumber-th place in the pictures' list")
+    fun changePictureOrder(
+        @RequestHeader("Authorization") authHeader: String?,
+        @PathVariable("oldNumber") oldNumber: Int,
+        @PathVariable("newNumber") newNumber: Int,
+    ): ResponseEntity<String> {
+        val swipingPerson = personService.getCurrentMember(authHeader, null)
+        return ResponseEntity.ok(personService.changePictureOrder(swipingPerson, oldNumber, newNumber))
+    }
+
+
+    @GetMapping("/files/{filename:.+}")
+    @ResponseBody
+    open fun serveFile(@PathVariable filename: String?): ResponseEntity<Resource?>? {
+        val file: Resource? = storageService.loadAsResource(filename!!)
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file?.filename.toString() + "\"")
+            .body<Resource?>(file)
     }
 
 

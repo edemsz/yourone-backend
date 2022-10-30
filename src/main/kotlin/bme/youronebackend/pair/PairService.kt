@@ -5,9 +5,12 @@ import bme.youronebackend.basic.ResourceNotFoundException
 import bme.youronebackend.person.Person
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
+
 
 @Service
-class PairService {
+open class PairService {
     @Autowired
     lateinit var repository: PairRepository
 
