@@ -1,7 +1,9 @@
 package bme.youronebackend.message
 
+import bme.youronebackend.pair.PairEntity
 import bme.youronebackend.pair.PairService
 import bme.youronebackend.person.Person
+import bme.youronebackend.person.PersonMapperFacade
 import bme.youronebackend.person.PersonService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -18,17 +20,13 @@ class MessageService {
     @Autowired
     private lateinit var personService: PersonService
 
+
     fun sendMessage(messageDto: SendMessageDTO, sender: Person): MessageEntity {
         val message = MessageEntity()
         message.text = messageDto.text
         message.addressee = personService.getById(messageDto.addresseeId)
         message.sender = sender
         message.pair = pairService.getPair(sender, message.addressee)
-        println(message.addressee.name)
-        println(message.sender.name)
-        println(message.pair.a.name)
-        println(message.pair.b.name)
-        println(message.text)
         return messageRepository.save(message)
 
     }
@@ -55,9 +53,16 @@ class MessageService {
         }
     }
 
-    fun findAllChatPartners(user: Person): List<Person> {
+    private fun findAllChatPairs(user: Person): List<PairEntity> {
         val matches = pairService.getMatchesByPerson(user)
-        return matches.filter { pair -> messageRepository.existsByPair(pair) }.map { pair -> pair.getOtherPerson(user) }
+        return matches.filter { pair -> messageRepository.existsByPair(pair) }
+    }
+
+    fun findAllChats(user: Person): List<MessageEntity> {
+        val chatPartners = findAllChatPairs(user)
+        return chatPartners.map {
+            messageRepository.findFirstByPairOrderBySentTimeDesc(it)
+        }
     }
 
     fun allChats(): List<MessageEntity> = messageRepository.findAll()
