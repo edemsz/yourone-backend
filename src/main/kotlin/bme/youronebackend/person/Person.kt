@@ -31,9 +31,7 @@ class Person() : YourOneEntityBase() {
     }
 
     @OneToMany(cascade = [CascadeType.ALL])
-    lateinit var photos:MutableList<Photo>
-
-
+    var photos: MutableList<Photo> = mutableListOf()
 
 
     @Column(nullable = false)
@@ -79,12 +77,11 @@ class Person() : YourOneEntityBase() {
 
 @Entity
 class Photo() {
-    var name: String=""
+    var name: String = ""
 
     constructor(name: String) : this() {
         this.name = name
     }
-
 
 
     @Id

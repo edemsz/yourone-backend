@@ -4,6 +4,7 @@ import bme.youronebackend.auth.*
 import bme.youronebackend.basic.ResourceAlreadyExistsException
 import bme.youronebackend.basic.ResourceNotFoundException
 import bme.youronebackend.pair.PairService
+import bme.youronebackend.person.yourone.YourOneEntity
 import bme.youronebackend.person.yourone.YourOneRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
@@ -92,7 +93,7 @@ open class PersonService
 
     private fun mayBePairs(swipingPerson: Person, otherPerson: Person): Boolean {
         if ((swipingPerson.minAge == null) || (swipingPerson.maxAge == null) || (otherPerson.age in (swipingPerson.minAge!!..swipingPerson.maxAge!!))) if (swipingPerson.chemistry == null || calculatePct(
-                swipingPerson,
+                swipingPerson.theirOne!!,
                 otherPerson).pct > swipingPerson.chemistry!!
         ) if (isPotentialPair(swipingPerson, otherPerson))
 
@@ -120,63 +121,63 @@ open class PersonService
         return pair != null
     }
 
-    fun calculatePct(swipingUser: Person, otherPerson: Person): Match {
+    fun calculatePct(swipingUsersOne: YourOneEntity, otherPerson: Person): Match {
         val allAttributes = 18
         var matchingAttribute = 0.0
         val match = Match(0, emptyList())
-        if (otherPerson.alcohol == swipingUser.alcohol) {
+        if (otherPerson.alcohol == swipingUsersOne.alcohol) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("alcohol", mapOf(Pair(otherPerson.alcohol!!, true)))
         } else match.commonAttributes += CommonAttributes("alcohol", mapOf(Pair(otherPerson.alcohol!!, false)))
 
-        if (otherPerson.childrenNumber == swipingUser.childrenNumber) {
+        if (otherPerson.childrenNumber == swipingUsersOne.childrenNumber) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("childrenNumber",
                 mapOf(Pair(otherPerson.childrenNumber!!, true)))
         } else match.commonAttributes += CommonAttributes("childrenNumber",
             mapOf(Pair(otherPerson.childrenNumber!!, false)))
 
-        if (otherPerson.cigarettes == swipingUser.cigarettes) {
+        if (otherPerson.cigarettes == swipingUsersOne.cigarettes) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("cigarettes", mapOf(Pair(otherPerson.cigarettes!!, true)))
         } else match.commonAttributes += CommonAttributes("cigarettes", mapOf(Pair(otherPerson.cigarettes!!, false)))
-        if (otherPerson.eduLevel == swipingUser.eduLevel) {
+        if (otherPerson.eduLevel == swipingUsersOne.eduLevel) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("eduLevel", mapOf(Pair(otherPerson.eduLevel!!, true)))
         } else match.commonAttributes += CommonAttributes("eduLevel", mapOf(Pair(otherPerson.eduLevel!!, false)))
-        if (otherPerson.eyeColour == swipingUser.eyeColour) {
+        if (otherPerson.eyeColour == swipingUsersOne.eyeColour) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("eyeColour", mapOf(Pair(otherPerson.eyeColour!!, true)))
         } else match.commonAttributes += CommonAttributes("eyeColour", mapOf(Pair(otherPerson.eyeColour!!, false)))
 
         val filmTasteAttributes = CommonAttributes("filmTaste", emptyMap())
         otherPerson.filmTaste.forEach {
-            if (swipingUser.filmTaste.contains(it)) {
-                matchingAttribute += 1.0 / swipingUser.filmTaste.size
+            if (swipingUsersOne.filmTaste.contains(it)) {
+                matchingAttribute += 1.0 / swipingUsersOne.filmTaste.size
                 filmTasteAttributes.matches += Pair(it, true)
             } else filmTasteAttributes.matches += Pair(it, false)
         }
         match.commonAttributes += filmTasteAttributes
-        if (otherPerson.glasses == swipingUser.glasses) {
+        if (otherPerson.glasses == swipingUsersOne.glasses) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("glasses", mapOf(Pair(otherPerson.glasses!!, true)))
         } else match.commonAttributes += CommonAttributes("glasses", mapOf(Pair(otherPerson.glasses!!, false)))
 
-        if (otherPerson.horoscope == swipingUser.horoscope) {
+        if (otherPerson.horoscope == swipingUsersOne.horoscope) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("horoscope", mapOf(Pair(otherPerson.horoscope!!, true)))
         } else match.commonAttributes += CommonAttributes("horoscope", mapOf(Pair(otherPerson.horoscope!!, false)))
 
         val interestAttributes = CommonAttributes("interests", emptyMap())
         otherPerson.interests.forEach {
-            if (swipingUser.interests.contains(it)) {
-                matchingAttribute += 1.0 / swipingUser.interests.size
+            if (swipingUsersOne.interests.contains(it)) {
+                matchingAttribute += 1.0 / swipingUsersOne.interests.size
                 interestAttributes.matches += Pair(it, true)
             } else interestAttributes.matches += Pair(it, false)
         }
         match.commonAttributes += interestAttributes
 
-        if (otherPerson.jobType == swipingUser.jobType) {
+        if (otherPerson.jobType == swipingUsersOne.jobType) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("jobType", mapOf(Pair(otherPerson.jobType!!, true)))
         } else match.commonAttributes += CommonAttributes("jobType", mapOf(Pair(otherPerson.jobType!!, false)))
@@ -184,14 +185,14 @@ open class PersonService
 
         val languageAttributes = CommonAttributes("languages", emptyMap())
         otherPerson.languages.forEach {
-            if (swipingUser.languages.contains(it)) {
-                matchingAttribute += 1.0 / swipingUser.languages.size
+            if (swipingUsersOne.languages.contains(it)) {
+                matchingAttribute += 1.0 / swipingUsersOne.languages.size
                 languageAttributes.matches += Pair(it, true)
             } else languageAttributes.matches += Pair(it, false)
         }
         match.commonAttributes += languageAttributes
 
-        if (otherPerson.maritalStatus == swipingUser.maritalStatus) {
+        if (otherPerson.maritalStatus == swipingUsersOne.maritalStatus) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("maritalStatus", mapOf(Pair(otherPerson.maritalStatus!!, true)))
         } else match.commonAttributes += CommonAttributes("maritalStatus",
@@ -199,35 +200,35 @@ open class PersonService
 
         val musicalTasteAttributes = CommonAttributes("musicalTaste", emptyMap())
         otherPerson.musicalTaste.forEach {
-            if (swipingUser.musicalTaste.contains(it)) {
-                matchingAttribute += 1.0 / swipingUser.musicalTaste.size
+            if (swipingUsersOne.musicalTaste.contains(it)) {
+                matchingAttribute += 1.0 / swipingUsersOne.musicalTaste.size
                 musicalTasteAttributes.matches += Pair(it, true)
             } else musicalTasteAttributes.matches += Pair(it, false)
         }
         match.commonAttributes += musicalTasteAttributes
 
 
-        if (otherPerson.piercing == swipingUser.piercing) {
+        if (otherPerson.piercing == swipingUsersOne.piercing) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("piercing", mapOf(Pair(otherPerson.piercing!!, true)))
         } else match.commonAttributes += CommonAttributes("piercing", mapOf(Pair(otherPerson.piercing!!, false)))
 
-        if (otherPerson.religion == swipingUser.religion) {
+        if (otherPerson.religion == swipingUsersOne.religion) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("religion", mapOf(Pair(otherPerson.religion!!, true)))
         } else match.commonAttributes += CommonAttributes("religion", mapOf(Pair(otherPerson.religion!!, false)))
 
-        if (otherPerson.shape == swipingUser.shape) {
+        if (otherPerson.shape == swipingUsersOne.shape) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("shape", mapOf(Pair(otherPerson.shape!!, true)))
         } else match.commonAttributes += CommonAttributes("shape", mapOf(Pair(otherPerson.shape!!, false)))
 
-        if (otherPerson.sportiness == swipingUser.sportiness) {
+        if (otherPerson.sportiness == swipingUsersOne.sportiness) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("sportiness", mapOf(Pair(otherPerson.sportiness!!, true)))
         } else match.commonAttributes += CommonAttributes("sportiness", mapOf(Pair(otherPerson.sportiness!!, false)))
 
-        if (otherPerson.tattoo == swipingUser.tattoo) {
+        if (otherPerson.tattoo == swipingUsersOne.tattoo) {
             matchingAttribute++
             match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.sportiness!!, true)))
         } else match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.sportiness!!, false)))
@@ -255,24 +256,30 @@ open class PersonService
         return pairService.replyToPartner(denyingPerson, otherPerson, true)
     }
 
+    fun makeMatch(aId: Long, bId: Long) {
+        val a = getById(aId)
+        val b = getById(bId)
+        pairService.checkPair(a, b)
+        pairService.replyToPartner(a, b, true)
+        pairService.replyToPartner(b, a, true)
+    }
+
     fun getMatches(swipingPerson: Person): List<Person> = pairService.getMatchedPersonsByPerson(swipingPerson)
 
     fun getById(id: Long): Person = repository.getById(id)
     private fun savePhoto(person: Person, filePath: String) {
-        person.photos+=Photo(filePath)
+        person.photos += Photo(filePath)
         updateById(person.id, person)
     }
 
     fun savePhoto(person: Person, filePath: String, index: Int?) {
-        if (index == null)
-            return savePhoto(person, filePath)
+        if (index == null) return savePhoto(person, filePath)
         person.photos.add(index, Photo(filePath))
         updateById(person.id, person)
     }
 
     fun changePictureOrder(swipingPerson: Person, oldNumber: Int, newNumber: Int): String {
-        if (swipingPerson.photos.size < max(oldNumber, newNumber))
-            throw ResourceNotFoundException()
+        if (swipingPerson.photos.size < max(oldNumber, newNumber)) throw ResourceNotFoundException()
         val photo = swipingPerson.photos.removeAt(oldNumber)
         swipingPerson.photos.add(newNumber, photo)
         updateById(swipingPerson.id, swipingPerson)

@@ -11,6 +11,9 @@ FROM openjdk:14-jdk-alpine
 
 COPY --from=build /home/app/target/yourone-backend.jar /usr/local/lib/yourone-backend.jar
 
+CMD mkdir /home/app/static-files
+
+
 CMD ng serve --host 0.0.0.0 --disable-host-check
 
 EXPOSE 8040

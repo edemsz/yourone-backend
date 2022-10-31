@@ -28,7 +28,6 @@ class MessageService {
         message.sender = sender
         message.pair = pairService.getPair(sender, message.addressee)
         return messageRepository.save(message)
-
     }
 
 

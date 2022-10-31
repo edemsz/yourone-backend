@@ -123,6 +123,12 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-allopen</artifactId>
+            <version>1.6.10</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
@@ -180,8 +186,6 @@
         </dependency>
 
 
-
-
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -192,7 +196,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-
 
 
         <dependency>
@@ -375,7 +378,6 @@
                                 <sourceDir>src/main/java</sourceDir>
                             </sourceDirs>
                             <annotationProcessorPaths>
-                                <!-- Specify your annotation processors here. -->
                                 <annotationProcessorPath>
                                     <groupId>com.google.dagger</groupId>
                                     <artifactId>dagger-compiler</artifactId>
@@ -400,6 +402,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>1.6.10</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
 

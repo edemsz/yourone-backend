@@ -42,12 +42,10 @@ class MessageController {
 
         messagingTemplate.convertAndSendToUser(message.addressee.id.toString(),
             "/queue/messages",
-            ChatNotification(message.id!!, message.sender.id, message.sender.name, message.text, zdt.toEpochSecond()))
-
+            ChatNotification(message.id, message.sender.id, message.sender.name, message.text, zdt.toEpochSecond()))
         messagingTemplate.convertAndSendToUser(message.sender.id.toString(),
             "/queue/messages",
             ChatNotification(message.id, message.sender.id, message.sender.name, message.text, zdt.toEpochSecond()))
-
     }
 
     @GetMapping("api/chat/{addresseeId}/count")
@@ -64,10 +62,16 @@ class MessageController {
     fun findChatMessages(
         @RequestHeader("Authorization") authHeader: String?,
         @PathVariable addresseeId: Long,
-    ): ResponseEntity<List<MessageEntity>> {
+    ): ResponseEntity<List<ChatNotification>> {
         val sender = personService.getCurrentMember(authHeader, null)
+        val messages = messageService.findChatMessages(sender, addresseeId)
+        val notifications = messages.map {
+            val zdt = it.sentTime.atZone(ZoneId.of("Europe/Budapest"))
 
-        return ResponseEntity.ok(messageService.findChatMessages(sender, addresseeId))
+            ChatNotification(it.id, it.sender.id, it.sender.name, it.text, zdt.toEpochSecond())
+        }
+
+        return ResponseEntity.ok(notifications)
     }
 
     @GetMapping("/api/chat")
@@ -81,8 +85,10 @@ class MessageController {
             val partner = if (m.pair.a == user) m.pair.b else m.pair.a
             val partnerDto = personMapper.entityToDto(partner)
             val zdt: ZonedDateTime = m.sentTime.atZone(ZoneId.of("Europe/Budapest"))
-            val chatNotification = ChatNotification(m.id!!, m.sender.id, m.sender.name, m.text, zdt.toEpochSecond())
-            recentChats+=RecentChatDTO(partnerDto,chatNotification,messageService.countNewMessages(user,partner.id))
+            val chatNotification = ChatNotification(m.id, m.sender.id, m.sender.name, m.text, zdt.toEpochSecond())
+            recentChats += RecentChatDTO(partnerDto,
+                chatNotification,
+                messageService.countNewMessages(user, partner.id))
         }
         return ResponseEntity.ok(recentChats)
     }

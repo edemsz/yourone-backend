@@ -21,7 +21,7 @@ class StorageService {
     @Autowired
     lateinit var personService: PersonService
 
-    private var rootLocation: Path = Paths.get("static-files")
+    private var rootLocation: Path = Paths.get("src/main/resources/static-files")
     private fun load(filename: String): Path? {
         return rootLocation.resolve(filename)
     }

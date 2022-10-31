@@ -91,6 +91,17 @@ open class PersonController {
         return ResponseEntity.ok(null)
     }
 
+    @ApiOperation("Makes instant match, only for testing")
+    @PostMapping("/partner-match/make/{a_id}/{b_id}")
+    fun noMatch(
+        @RequestParam("a_id") a_id: Long,
+        @RequestParam("b_id") b_id: Long,
+    ): ResponseEntity<String> {
+        personService.makeMatch(a_id, b_id)
+        return ResponseEntity.ok("ok")
+    }
+
+
     @PostMapping("/partner-match/yes")
     fun yesMatch(
         @RequestBody partnerId: Long,
@@ -99,14 +110,7 @@ open class PersonController {
         val swipingPerson = personService.getCurrentMember(authHeader, null)
         val partner = personService.getById(partnerId)
         return if (personService.yesMatch(swipingPerson, partnerId)) {
-            val partnerPhoto = if (partner.photos.size > 0) partner.photos[0].name else null
-            val myPhoto = if (swipingPerson.photos.size > 0) swipingPerson.photos[0].name else null
-            val itsAMatch = ItsAMatch(partner.id,
-                partner.name,
-                partnerPhoto,
-                swipingPerson.id,
-                swipingPerson.name,
-                myPhoto)
+            val itsAMatch = ItsAMatch(personMapper.entityToDto(partner), personMapper.entityToDto(swipingPerson))
             ResponseEntity.ok(itsAMatch)
         } else ResponseEntity.ok(null)
 

@@ -11,7 +11,7 @@ class MessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long? = null
+    val id: Long = -1
 
     @Column
     var text: String = ""
