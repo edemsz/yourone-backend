@@ -83,7 +83,7 @@ class MessageController {
         val recentChats = emptyList<RecentChatDTO>().toMutableList()
         for (m in recentMessages) {
             val partner = if (m.pair.a == user) m.pair.b else m.pair.a
-            val partnerDto = personMapper.entityToDto(partner)
+            val partnerDto = personMapper.pairToDto(partner,user)
             val zdt: ZonedDateTime = m.sentTime.atZone(ZoneId.of("Europe/Budapest"))
             val chatNotification = ChatNotification(m.id, m.sender.id, m.sender.name, m.text, zdt.toEpochSecond())
             recentChats += RecentChatDTO(partnerDto,
