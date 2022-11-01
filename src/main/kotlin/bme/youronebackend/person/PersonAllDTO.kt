@@ -79,7 +79,6 @@ data class CreatePersonDTO(
     var interests: List<Int>? = null,
     var shape: Int? = null,
     var facialHair: Int? = null,
-    var match: Match? = null,
 
     var minAge: Int? = null,
     var maxAge: Int? = null,

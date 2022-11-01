@@ -230,8 +230,8 @@ open class PersonService
 
         if (otherPerson.tattoo == swipingUsersOne.tattoo) {
             matchingAttribute++
-            match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.sportiness!!, true)))
-        } else match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.sportiness!!, false)))
+            match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.tattoo!!, true)))
+        } else match.commonAttributes += CommonAttributes("tattoo", mapOf(Pair(otherPerson.tattoo!!, false)))
 
 
         val matchPct = (matchingAttribute * 1.0 / allAttributes * 100).roundToInt()
